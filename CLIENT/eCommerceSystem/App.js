@@ -40,6 +40,8 @@ import BillList from "./src/screens/Customer/BillList";
 import ChooseBill from "./src/screens/Customer/ChooseBill";
 import BillConfirm from "./src/screens/Customer/BillConfirm";
 import ReviewProduct from "./src/screens/Customer/ReviewProduct";
+import FollowList from "./src/screens/Customer/FollowList";
+
 import OrderPendingList from "./src/screens/Saller/OrderPendingList";
 import ProductListComments from "./src/screens/Saller/ProductListComments";
 import CommentDetail from "./src/screens/Saller/CommentDetail";
@@ -89,6 +91,7 @@ const RootComponent = () => {
               <Stack.Screen name="BillList" component={BillList} />
               <Stack.Screen name="ChooseBill" component={ChooseBill} />
               <Stack.Screen name="BillConfirm" component={BillConfirm} />
+              <Stack.Screen name="FollowList" component={FollowList} />
               <Stack.Screen name="ReviewProduct" component={ReviewProduct} />
               <Stack.Screen
                 name="ProductListComments"

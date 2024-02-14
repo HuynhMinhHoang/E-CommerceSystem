@@ -145,7 +145,7 @@ const ContentComponent = ({ navigation }) => {
 
       const productId = response.data.id;
 
-      // console.log(productId);
+      console.log(idStore);
 
       await uploadProductImages(productId);
       await createAttribute(productId);

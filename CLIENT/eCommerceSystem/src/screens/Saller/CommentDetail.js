@@ -116,14 +116,6 @@ const ContentComponent = ({
     fetchData();
   }, []);
 
-  //format price
-  const formatPrice = (price) => {
-    return price.toLocaleString("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    });
-  };
-
   //handle reply cmt
   const handleReply = (comment) => {
     setSelectedComment((prevSelectedComment) => {
@@ -179,6 +171,7 @@ const ContentComponent = ({
 
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedCommentContent, setEditedCommentContent] = useState("");
+
   const handleEditComment = (reply) => {
     setEditingCommentId(reply.id);
     setEditedCommentContent(reply.content);

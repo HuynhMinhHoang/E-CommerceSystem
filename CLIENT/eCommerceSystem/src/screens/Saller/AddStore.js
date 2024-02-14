@@ -107,6 +107,7 @@ const ContentComponent = ({ navigation }) => {
       formData.append("user", user.id);
       formData.append("avt", { uri: avatar, name: filename, type });
 
+      console.log(user.id);
       const api = await authApi();
 
       const response = await api.post(endpoints.create_store, formData, {

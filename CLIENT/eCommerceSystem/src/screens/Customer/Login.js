@@ -215,40 +215,75 @@ const FooterComponent = ({ navigation }) => {
 
   const onGoogleButtonPress = async () => {
     try {
-      const { idToken } = await GoogleSignin.signIn();
+      const { idToken, user } = await GoogleSignin.signIn({
+        forceCodeForRefreshToken: true,
+      });
       const googleCredential = GoogleAuthProvider.credential(idToken);
       const userSignIn = await signInWithCredential(auth, googleCredential);
 
-      const username = userSignIn._tokenResponse.displayName;
-      const avt = userSignIn._tokenResponse.photoUrl;
+      console.log("=======>", userSignIn);
 
-      console.log(userSignIn);
+      const { displayName, email } = userSignIn._tokenResponse;
+      const photoURL = userSignIn._tokenResponse?.photoUrl;
+      const uid = userSignIn.user.uid;
 
-      const email = userSignIn._tokenResponse.email;
-      // await saveUserToDatabase(email);
+      console.log("Received data:");
+      console.log("idToken:", idToken);
+      console.log("displayName:", displayName);
+      console.log("email:", email);
+      console.log("uid:", uid);
+      console.log("photoURL:", photoURL);
 
-      dispatch({
-        type: "login",
-        payload: { username, avt },
+      await sendGoogleIdTokenToServer({
+        idToken,
+        displayName,
+        email,
+        uid,
+        photoURL,
       });
-      navigation.navigate("HomeTabs");
     } catch (error) {
       console.log("Error login google:", error);
     }
   };
 
-  // const saveUserToDatabase = async (email) => {
-  //   try {
-  //     const api = authApi();
-  //     const response = await api.post(endpoints.accounts, {
-  //       email,
-  //     });
-  //     console.log("User saved to database:", response.data);
-  //   } catch (error) {
-  //     console.error("Error saving user to database:", error);
-  //   }
-  // };
+  const sendGoogleIdTokenToServer = async ({
+    idToken,
+    displayName,
+    email,
+    uid,
+    photoURL,
+  }) => {
+    try {
+      const formData = new FormData();
+      formData.append("idToken", idToken);
+      formData.append("displayName", displayName);
+      formData.append("email", email);
+      formData.append("uid", uid);
+      formData.append("photoURL", photoURL);
 
+      const response = await axios.post(endpoints.google_login, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      // console.log("Server Response:", response.data);
+      const result = response.data;
+
+      console.log("User Google:", result.user);
+
+      dispatch({
+        type: "login",
+        payload: {
+          ...result.user,
+          avt: photoURL,
+        },
+      });
+
+      navigation.navigate("HomeTabs");
+    } catch (error) {
+      console.log("Error sending idToken to server:", error);
+    }
+  };
   //login fb
   const [initializingFacebook, setInitializingFacebook] = useState(true);
 
@@ -273,17 +308,57 @@ const FooterComponent = ({ navigation }) => {
         facebookCredential
       );
 
-      const username = response._tokenResponse.displayName;
-      const avt = response._tokenResponse.photoUrl;
+      const idToken = response._tokenResponse.idToken;
+      const displayName = response._tokenResponse.fullName;
+      const photoURL = response.user.photoURL;
+      const uid = response.user.uid;
 
-      dispatch({
-        type: "login",
-        payload: { username, avt },
+      await sendFacebookIdTokenToServer({
+        idToken,
+        displayName,
+        photoURL,
+        uid,
       });
-      console.log(response);
-      navigation.navigate("HomeTabs");
+
+      // console.log(displayName, photoURL, uid);
     } catch (error) {
       console.log("Error login fb:", error);
+    }
+  };
+
+  const sendFacebookIdTokenToServer = async ({
+    displayName,
+    uid,
+    photoURL,
+  }) => {
+    try {
+      const formData = new FormData();
+      formData.append("displayName", displayName);
+      formData.append("uid", uid);
+      formData.append("photoURL", photoURL);
+
+      const response = await axios.post(endpoints.facebook_login, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        const result = response.data;
+        console.log(result);
+
+        dispatch({
+          type: "login",
+          payload: {
+            ...result.user,
+            avt: photoURL,
+          },
+        });
+      }
+
+      navigation.navigate("HomeTabs");
+    } catch (error) {
+      console.log("Error sending idToken to server:", error);
     }
   };
 

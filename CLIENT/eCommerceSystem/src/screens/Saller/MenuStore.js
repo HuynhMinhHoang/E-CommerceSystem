@@ -167,9 +167,9 @@ const ContentComponent = ({ navigation, storeData, route }) => {
               </View>
             </View>
           ))}
-        <TouchableOpacity style={styles.viewShop}>
+        {/* <TouchableOpacity style={styles.viewShop}>
           <Text style={styles.textViewShop}>Xem Shop</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* <View style={styles.brContent}></View> */}

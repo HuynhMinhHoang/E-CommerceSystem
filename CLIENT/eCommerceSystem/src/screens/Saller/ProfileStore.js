@@ -24,6 +24,7 @@ const windownHeight = Dimensions.get("window").height;
 export default ProfileStore = ({ navigation }) => {
   const route = useRoute();
   const { storeID } = route.params;
+  console.log("-------------------->", storeID);
   return (
     <View style={styles.viewContainer}>
       <View style={styles.viewHeader}>
@@ -480,7 +481,7 @@ const ContentComponent = ({ navigation, storeID }) => {
                       {/* <Text style={styles.textRating}>{raTing}</Text> */}
                       {/* <View style={styles.brIconLoginFB}></View> */}
                       <Text style={styles.textRating1}>
-                        Đã bán
+                        Đã bán{" "}
                         {product.quantity_sold || product.product.quantity_sold}
                       </Text>
                     </View>

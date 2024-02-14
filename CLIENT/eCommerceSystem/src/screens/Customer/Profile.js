@@ -128,7 +128,7 @@ const HeaderComponent = ({ user, navigation }) => {
 
               <View>
                 <>
-                  <Text style={styles.textNameUser}>{user.username}</Text>
+                  <Text style={styles.textNameUser}>{user.full_name}</Text>
                   <Text style={styles.textFollow}>
                     Đang theo dõi
                     <Text style={styles.textCountFollow}> 155</Text>
@@ -206,8 +206,8 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
           ></Image>
         </TouchableOpacity>
 
-        <View style={styles.brContent1}></View>
-        <TouchableOpacity style={styles.bgIconBill}>
+        {/* <View style={styles.brContent1}></View> */}
+        {/* <TouchableOpacity style={styles.bgIconBill}>
           <Image
             source={require("../../images/setting2.png")}
             style={styles.iconLike}
@@ -217,10 +217,22 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
             source={require("../../images/settingnext.png")}
             style={styles.iconNext}
           ></Image>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.brContent1}></View>
-        <TouchableOpacity style={styles.bgIconBill}>
+        <TouchableOpacity
+          style={styles.bgIconBill}
+          onPress={() => {
+            const userId = user && user.id;
+
+            //id login
+            if (userId) {
+              navigation.navigate("FollowList");
+            } else {
+              navigation.navigate("Login");
+            }
+          }}
+        >
           <Image
             source={require("../../images/setting3.png")}
             style={styles.iconFollow}

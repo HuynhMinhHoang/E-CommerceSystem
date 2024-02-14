@@ -28,6 +28,11 @@ urlpatterns = [
     path('', include(router.urls)),
     path('admin/', adminSite.urls),
 
+    # google
+    path('google-login/', views.google_login, name='google_login'),
+    # facebook
+    path('facebook-login/', views.facebook_login, name='facebook_login'),
+
     # vnpay
     path('pay', views.index, name='index'),
     path('payment', views.payment, name='payment'),

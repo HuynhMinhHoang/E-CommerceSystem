@@ -4,6 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const HOST = "http://10.0.2.2:8000";
 
 export const endpoints = {
+  google_login: "/google-login/",
+  facebook_login: "/facebook-login/",
   create_account: "/accounts/create_account/",
   current_account: "/accounts/current_account/",
   roles: "/roles/",

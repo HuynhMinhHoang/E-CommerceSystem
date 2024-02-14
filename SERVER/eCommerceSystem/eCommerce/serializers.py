@@ -45,10 +45,26 @@ class AccountSerializer(ModelSerializer):
         return account
 
 
+class FollowedStoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ["id", "name_store", "address", "active", 'account', 'avt']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if representation.get('avt'):
+            representation['avt'] = "https://res.cloudinary.com/diyeuzxqt/" + representation['avt']
+
+        return representation
+
+
 class FollowSerializer(serializers.ModelSerializer):
+    store_info = FollowedStoreSerializer(source='store', read_only=True)
+
     class Meta:
         model = Follow
-        fields = ['id', 'follower', 'store']
+        fields = ['id', 'follower', 'store', 'store_info']
 
 
 class StoreSerializer(ModelSerializer):
@@ -56,7 +72,7 @@ class StoreSerializer(ModelSerializer):
 
     class Meta:
         model = Store
-        fields = ["id", "name_store", "address", "active", 'avt', 'followers']
+        fields = ["id", "name_store", "address", "active", 'account', 'avt', 'followers']
         # fields = ["id", "name_store", "address", "active"]
 
     def to_representation(self, instance):

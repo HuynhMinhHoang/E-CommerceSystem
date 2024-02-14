@@ -2,6 +2,7 @@ import hashlib
 import hmac
 import json
 import random
+import string
 from datetime import datetime
 
 import requests
@@ -13,6 +14,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, get_list_or_404
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from google.auth.transport import requests
+from google.oauth2 import id_token
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -28,44 +31,12 @@ from .serializers import RoleSerializer, ProductSerializer, CategorySerializer, 
 from .vnpayConfig import vnpay
 
 
-# from eCommerce import perm
-
-
-# class IsAdmin(permissions.BasePermission):
-#     def isAdmin(self, request, view):
-#         return request.account and request.account.is_staff
-
-
 class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView):
     # RetrieveAPIView lay thong in user dang login
     queryset = Account.objects.filter(is_active=True)
     serializer_class = serializers.AccountSerializer  # serializer du lieu ra thanh json
     parser_classes = [parsers.MultiPartParser]
 
-    # permission_classes = [permissions.IsAuthenticated]
-
-    # permission_classes = [IsAdmin]
-    # @swagger_auto_schema(
-    #     operation_description="Get the current user",
-    #     manual_parameters=[
-    #         openapi.Parameter(
-    #             name="Authorization",
-    #             in_=openapi.IN_HEADER,
-    #             type=openapi.TYPE_STRING,
-    #             description="Bearer token",
-    #             required=False,
-    #             default="Bearer your_token_here"
-    #         )
-    #     ],
-    #     responses={
-    #         200: openapi.Response(
-    #             description="SMS sent with password reset instructions",
-    #         ),
-    #         400: openapi.Response(
-    #             description="User with this phone number does not exist",
-    #         ),
-    #     }
-    # )
     @action(methods=['post'], url_name='create-account', detail=False)
     def create_account(self, request):
         serializer = serializers.AccountSerializer(data=request.data)
@@ -110,6 +81,121 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIV
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Account.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+# login google
+def generate_random_string(length):
+    """Tạo chuỗi ngẫu nhiên có ký tự và số."""
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
+
+
+@csrf_exempt
+def google_login(request):
+    if request.method == 'POST':
+        id_token_data = request.POST.get('idToken', None)
+        display_name = request.POST.get('displayName', None)
+        email = request.POST.get('email', None)
+        uid = request.POST.get('uid', None)
+        photo_url = request.POST.get('photoURL', None)
+
+        print("Received data from client:")
+        print("idToken:", id_token_data)
+        print("displayName:", display_name)
+        print("email:", email)
+        print("uid:", uid)
+        print("photoURL:", photo_url)
+        if id_token_data:
+            try:
+                id_info = id_token.verify_oauth2_token(id_token_data, requests.Request())
+                email = id_info['email']
+                uid = id_info['sub']
+                display_name = id_info['name']
+
+                try:
+                    user = Account.objects.get(social_user_id=uid)
+
+                    user_data = {
+                        'full_name': user.full_name,
+                        'avt': str(user.avt),
+                        'id': user.id,
+                    }
+
+                    return JsonResponse({'success': True, 'message': 'Login successful', 'user': user_data})
+                except Account.DoesNotExist:
+
+                    random_username = generate_random_string(10)
+
+                    user = Account(
+                        social_user_id=uid,
+                        username=random_username,
+                        email=email,
+                        full_name=display_name,
+                        role_id=3,
+                        avt=photo_url
+                    )
+                    user.save()
+
+                    user_data = {
+                        'full_name': user.full_name,
+                        'avt': str(user.avt),
+                        'id': user.id,
+                    }
+
+                    return JsonResponse(
+                        {'success': True, 'message': 'Account created and logged in', 'user': user_data})
+            except Exception as e:
+                return JsonResponse({'success': False, 'message': 'Error processing request'})
+        return JsonResponse({'success': False, 'message': 'No idToken provided'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
+# login facebook
+@csrf_exempt
+def facebook_login(request, *args, **kwargs):
+    if request.method == 'POST':
+        try:
+            display_name = request.POST.get('displayName', None)
+            uid = request.POST.get('uid', None)
+            photo_url = request.POST.get('photoURL', None)
+
+            if uid:
+                try:
+                    user = Account.objects.get(social_user_id=uid)
+
+                    user_data = {
+                        'full_name': user.full_name,
+                        'avt': str(user.avt),
+                        'id': user.id,
+                    }
+
+                    return JsonResponse({'success': True, 'message': 'Login successful', 'user': user_data})
+                except Account.DoesNotExist:
+                    pass
+
+            random_username = generate_random_string(10)
+
+            user = Account(
+                social_user_id=uid,
+                username=random_username,
+                full_name=display_name,
+                role_id=3,
+                avt=photo_url
+            )
+            user.save()
+
+            user_data = {
+                'full_name': user.full_name,
+                'avt': str(user.avt),
+                'id': user.id,
+            }
+
+            return JsonResponse(
+                {'success': True, 'message': 'Account created and logged in', 'user': user_data})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': 'Error processing request'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -902,8 +988,30 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
     @action(methods=['POST'], detail=False)
     def create_store(self, request):
         user = request.user
+        idUser = request.data.get('user', None)
+        account = Account.objects.get(id=idUser)
+        if account.social_user_id is not None:
+            existing_store = Store.objects.filter(account=idUser)
 
-        if isinstance(user, AnonymousUser):
+            if existing_store.exists():
+                return Response({'error': 'Bạn đã có một cửa hàng.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            store_data = request.data.copy()
+
+            store_data['account'] = idUser
+            serializer = serializers.StoreSerializer(data=store_data)
+
+            if serializer.is_valid():
+                serializer.save()
+                account.role_id = 2
+                account.save()
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # social_user_id là null
+        elif isinstance(user, AnonymousUser):
             return Response({'error': 'Người dùng không hợp lệ.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         existing_store = Store.objects.filter(account=user)
@@ -912,9 +1020,6 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
             return Response({'error': 'Bạn đã có một cửa hàng.'}, status=status.HTTP_400_BAD_REQUEST)
 
         store_data = request.data.copy()
-
-        # if not hasattr(user, 'id'):
-        # return Response({'error': 'Người dùng không có thuộc tính id.'}, status=status.HTTP_400_BAD_REQUEST)
 
         store_data['account'] = user.id
         serializer = serializers.StoreSerializer(data=store_data)
@@ -931,7 +1036,8 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
     @action(methods=['POST'], detail=True)
     def add_product(self, request, pk=None):
         user = request.user
-        store = self.get_object()
+        idStore = pk
+        store = Store.objects.get(id=idStore)
 
         category = int(request.data.get('category_id'))
         quantity = int(request.data.get('quantity'))
@@ -939,6 +1045,24 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         name_product = request.data.get('name_product')
         price = float(request.data.get('price'))
         # status_pro = request.data.get('status', False)
+
+        if store.account.social_user_id is not None:
+
+            if not quantity or not name_product or not description or not price:
+                return Response({'error': 'Thông tin sản phẩm không đủ'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if not store:
+                return Response({'error': 'Bạn không có cửa hàng để thêm sản phẩm'}, status=status.HTTP_404_NOT_FOUND)
+
+            category = Category.objects.get(pk=category)
+            if not category:
+                return Response({'error': 'Bạn không có lọai mặt hàng'}, status=status.HTTP_404_NOT_FOUND)
+
+            product = Product.objects.create(name_product=name_product, store=store, category=category,
+                                             quantity=quantity, description=description, price=price)
+            product.save()
+            return Response(serializers.ProductSerializer(product).data, status=status.HTTP_201_CREATED)
+
         if user.is_authenticated and user.role_id == 2:
 
             if not quantity or not name_product or not description or not price:

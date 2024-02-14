@@ -21,6 +21,7 @@ class Account(AbstractUser):
     phone = models.CharField(max_length=15, null=True)
     avt = CloudinaryField('avt', null=True)
     role = models.ForeignKey(UserRole, on_delete=models.CASCADE, related_name="roles", null=True)
+    social_user_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
 
 class BaseModel(models.Model):
