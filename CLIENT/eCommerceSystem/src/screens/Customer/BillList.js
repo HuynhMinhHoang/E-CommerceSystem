@@ -168,7 +168,7 @@ const ContentComponent = ({ navigation, formatPrice }) => {
               <Text style={styles.textShop}>{group.storeInfo.name_store}</Text>
               <Text style={styles.iconView}>
                 <Text style={styles.iconView}>
-                  {order.status_pay === true && order.paymentType === 1
+                  {order.status_pay === true
                     ? "Đã thanh toán"
                     : "Vui lòng thanh toán"}
                 </Text>

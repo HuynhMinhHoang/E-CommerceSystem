@@ -734,15 +734,15 @@ const FooterComponent = ({
           response.data
         );
         const newId = response.data.id;
-        finalOrderId = newId; // Save the latest orderId
-        // Create order details for the current store
+        finalOrderId = newId;
         await createOrderDetails(newId, storeItems);
+
+        if (selectedPaymentType.id === 1) {
+          await createBill(newId, totalShip);
+        }
       }
 
-      // set the final orderId outside the loop
       setNewOrderId(finalOrderId);
-
-      // Handle payment method based on selectedPaymentType
 
       navigation.navigate("ChooseBill", {});
     } catch (error) {
@@ -750,7 +750,7 @@ const FooterComponent = ({
     }
   };
 
-  // Create order details for the current store
+  // order details
   const createOrderDetails = async (orderId, items) => {
     try {
       const formData = new FormData();
@@ -769,6 +769,25 @@ const FooterComponent = ({
       console.log("OrderDetails đã được tạo thành công cho cửa hàng", orderId);
     } catch (error) {
       console.error("Lỗi khi tạo OrderDetails:", error);
+    }
+  };
+
+  // create bill
+  const createBill = async (orderId, totalShip) => {
+    try {
+      const formData = new FormData();
+      formData.append("total_amount", totalPrice + totalShip);
+      formData.append("order_id", orderId);
+
+      await axios.post(endpoints.create_bill, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("total====", totalPrice + totalShip);
+      console.log("Bill đã được tạo thành công cho đơn hàng", orderId);
+    } catch (error) {
+      console.error("Lỗi khi tạo Bill:", error);
     }
   };
 

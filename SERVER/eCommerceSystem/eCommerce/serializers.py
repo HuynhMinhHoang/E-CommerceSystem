@@ -125,6 +125,10 @@ class ProductSerializer(ModelSerializer):
                   'product_attributes', 'images']
 
 
+class ProductQuantityUpdateSerializer(serializers.Serializer):
+    quantity = serializers.IntegerField()
+
+
 class CategorySerializer(ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)
 
@@ -178,6 +182,16 @@ class CommentProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentProduct
         fields = ['id', 'account_info', 'rating', 'content', 'reply_idComment', 'orderDetail', 'created_at']
+
+
+class CommentProductByUserSerializer(serializers.ModelSerializer):
+    account_info = AccountSerializer(source='account', read_only=True)
+    product_info = ProductSerializer(source='orderDetail.product', read_only=True)
+
+    class Meta:
+        model = CommentProduct
+        fields = ['id', 'account_info', 'rating', 'content', 'reply_idComment', 'orderDetail', 'created_at', 'product_info']
+
 
 
 class ProductWithCommentsSerializer(serializers.ModelSerializer):

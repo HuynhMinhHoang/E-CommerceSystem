@@ -41,7 +41,9 @@ import ChooseBill from "./src/screens/Customer/ChooseBill";
 import BillConfirm from "./src/screens/Customer/BillConfirm";
 import ReviewProduct from "./src/screens/Customer/ReviewProduct";
 import FollowList from "./src/screens/Customer/FollowList";
-
+import MyReviewProduct from "./src/screens/Customer/MyReviewProduct";
+import EditProfile from "./src/screens/Customer/EditProfile";
+import OrderSold from "./src/screens/Saller/OrderSold";
 import OrderPendingList from "./src/screens/Saller/OrderPendingList";
 import ProductListComments from "./src/screens/Saller/ProductListComments";
 import CommentDetail from "./src/screens/Saller/CommentDetail";
@@ -68,7 +70,7 @@ const RootComponent = () => {
               initialRouteName="HomeTabs"
               screenOptions={{ headerShown: false }}
             >
-              {/* <Stack.Screen name="Home" component={Home} /> */}
+              <Stack.Screen name="HomeTabs" component={MyTabs} />
               <Stack.Screen name="Login" component={Login} />
               <Stack.Screen name="Register" component={Register} />
               <Stack.Screen name="ProductDetail" component={ProductDetail} />
@@ -77,7 +79,6 @@ const RootComponent = () => {
               <Stack.Screen name="ProfileStore" component={ProfileStore} />
               <Stack.Screen name="MenuStore" component={MenuStore} />
               <Stack.Screen name="SearchProducts" component={SearchProducts} />
-              <Stack.Screen name="HomeTabs" component={MyTabs} />
               <Stack.Screen name="ProductList" component={ProductList} />
               <Stack.Screen name="ProductSoldOut" component={ProductSoldOut} />
               <Stack.Screen name="ProductPending" component={ProductPending} />
@@ -88,6 +89,11 @@ const RootComponent = () => {
               <Stack.Screen name="CategoryStats" component={CategoryStats} />
               <Stack.Screen name="BillDetail" component={BillDetail} />
               <Stack.Screen name="Pay" component={Pay} />
+              <Stack.Screen
+                name="MyReviewProduct"
+                component={MyReviewProduct}
+              />
+              <Stack.Screen name="OrderSold" component={OrderSold} />
               <Stack.Screen name="BillList" component={BillList} />
               <Stack.Screen name="ChooseBill" component={ChooseBill} />
               <Stack.Screen name="BillConfirm" component={BillConfirm} />
@@ -110,6 +116,7 @@ const RootComponent = () => {
                 name="ProductListStats"
                 component={ProductListStats}
               />
+              <Stack.Screen name="EditProfile" component={EditProfile} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>

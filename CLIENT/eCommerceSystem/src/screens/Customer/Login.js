@@ -276,6 +276,8 @@ const FooterComponent = ({ navigation }) => {
         payload: {
           ...result.user,
           avt: photoURL,
+          email: email,
+          full_name: fullName,
         },
       });
 
@@ -352,6 +354,7 @@ const FooterComponent = ({ navigation }) => {
           payload: {
             ...result.user,
             avt: photoURL,
+            full_name: fullName,
           },
         });
       }

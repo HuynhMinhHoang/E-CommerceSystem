@@ -109,7 +109,7 @@ const ContentComponent = ({ navigation }) => {
       formData.append("phone", phone);
       formData.append("username", username);
       formData.append("password", password);
-      formData.append("role", currentValue);
+      formData.append("role", 3);
       formData.append("avt", { uri: avatar, name: filename, type });
 
       // const api = await authApi();
@@ -300,7 +300,7 @@ const ContentComponent = ({ navigation }) => {
             </View>
 
             {/* role selection */}
-            <View style={styles.bgOption}>
+            {/* <View style={styles.bgOption}>
               <DropDown
                 style={styles.inputBgOption}
                 items={roleOptions}
@@ -311,7 +311,7 @@ const ContentComponent = ({ navigation }) => {
                 maxHeight={100}
                 placeholder="Chọn vai trò người dùng"
               />
-            </View>
+            </View> */}
 
             <View style={styles.textInfoPerson}>
               <Text style={styles.textInfoAC}>*Thông tin cá nhân</Text>

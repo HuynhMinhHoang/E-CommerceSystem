@@ -206,7 +206,8 @@ const ContentComponent = ({ product, storeData, navigation }) => {
       formData.append("name_product", productName);
       formData.append("description", productDescription);
       formData.append("price", parseFloat(productPrice));
-      formData.append("quantity", parseInt(productQuantity));
+      formData.append("quantity", productQuantity);
+      // console.log("so luongg", productQuantity);
       formData.append("category_id", selectedCategory);
 
       additionalFields.forEach((attribute, index) => {

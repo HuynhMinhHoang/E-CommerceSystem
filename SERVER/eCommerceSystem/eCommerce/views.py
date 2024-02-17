@@ -8,6 +8,7 @@ from datetime import datetime
 import requests
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.core import mail
 from django.db import models, transaction
 from django.db.models import Sum, Avg, Q
 from django.http import JsonResponse
@@ -27,7 +28,8 @@ from .models import Product, Category, Account, Image, UserRole, Order, Store, A
     OrderDetail, CommentProduct, ReviewStore, Bill
 from .serializers import RoleSerializer, ProductSerializer, CategorySerializer, AccountSerializer, ImageSerializer, \
     AttributeSerializer, OrderSerializer, OrderDetailSerializer, CommentProductSerializer, \
-    ProductWithCommentsSerializer, FollowSerializer
+    ProductWithCommentsSerializer, FollowSerializer, StoreSerializer, ProductQuantityUpdateSerializer, \
+    CommentProductByUserSerializer
 from .vnpayConfig import vnpay
 
 
@@ -79,6 +81,20 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIV
             account = self.queryset.get(pk=pk)
             serializer = self.serializer_class(account)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        except Account.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @action(methods=['patch'], detail=True)
+    def update_account(self, request, pk=None):
+        try:
+            account = Account.objects.get(pk=pk)
+            serializer = serializers.AccountSerializer(account, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Account.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -310,7 +326,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         names = request.data.getlist('name_at')
         values = request.data.getlist('value')
         att = request.data.getlist('attribute_id')
-        if quantity:
+        if quantity is not None:
             tam_quantity = p.quantity
             p.quantity = quantity
             p.save()
@@ -364,6 +380,23 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
             return Response('Cập nhật thành công', status=status.HTTP_200_OK)
         else:
             return Response('Cập nhật không thành công', status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['PATCH'], detail=True)
+    def update_quantity(self, request, pk):
+        product = self.get_object()
+
+        if product.quantity == 0:
+            serializer = ProductQuantityUpdateSerializer(data=request.data)
+
+            if serializer.is_valid():
+                new_quantity = serializer.validated_data['quantity']
+                product.quantity = new_quantity
+                product.save()
+                return Response('Quantity update thành công', status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response('Product quantity phải bằng 0', status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=True)
     def add_attribute(self, request, pk):
@@ -773,6 +806,33 @@ class BillViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Bill.objects.all()
     serializer_class = serializers.BillSerializer
 
+    # random bill
+    @staticmethod
+    def generate_random_code(length=17):
+        characters = string.ascii_letters + string.digits
+        return ''.join(random.choice(characters) for i in range(length))
+
+    @action(methods=['POST'], detail=False)
+    def create_bill(self, request):
+        try:
+            total_amount = float(request.data.get('total_amount', 0))
+            order_id = int(request.data.get('order_id', 0))
+
+            with transaction.atomic():
+                bill_code = self.generate_random_code()
+                bill_transactionNo = self.generate_random_code()
+
+                bill = Bill.objects.create(
+                    bill_code=bill_code,
+                    bill_transactionNo=bill_transactionNo,
+                    total_amount=total_amount,
+                    order_id=order_id
+                )
+
+                return Response(serializers.BillSerializer(bill).data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Store.objects.all()
@@ -876,6 +936,30 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         orders = Order.objects.filter(
             id__in=OrderDetail.objects.filter(product_id__in=product_ids).values_list('order_id', flat=True),
             status_order=False).order_by('-id')
+
+        orders_info = []
+        for order in orders:
+            order_details = OrderDetail.objects.filter(order=order)
+            order_details_serializer = OrderDetailSerializer(order_details, many=True)
+            order_serializer = OrderSerializer(order)
+            orders_info.append({'order_info': order_serializer.data, 'order_details': order_details_serializer.data})
+
+        return JsonResponse(orders_info, status=status.HTTP_200_OK, safe=False)
+
+    @action(detail=True, methods=['GET'])
+    def get_orders_status_order_status_pay_true(self, request, pk=None):
+        store = self.get_object()
+
+        if not store:
+            return Response({'error': 'Cửa hàng không tồn tại.'}, status=status.HTTP_404_NOT_FOUND)
+
+        product_ids = OrderDetail.objects.filter(product__store=store).values_list('product_id', flat=True)
+
+        orders = Order.objects.filter(
+            id__in=OrderDetail.objects.filter(product_id__in=product_ids).values_list('order_id', flat=True),
+            status_order=True,
+            status_pay=True
+        ).order_by('-id')
 
         orders_info = []
         for order in orders:
@@ -1238,6 +1322,49 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+    # confirm store
+    @action(methods=['GET'], detail=False)
+    def get_store_to_confirm(self, request):
+        store = Store.objects.filter(active=0)
+        store_show = StoreSerializer(store, many=True)
+        return Response(store_show.data, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=True)
+    def confirm_store(self, request, pk):
+        store = self.get_object()
+        success_count = 0
+        if store.active == 0:
+            store.active = 1
+            store.save()
+            store_account_email = store.account.email
+            store_account = store.account.full_name
+            subject = f"[NO REPLY] E-CommerceSystem send email confirm Store"
+
+            html_content = f"""
+                <p>Xin chào {store_account},</p>
+                <p>Cửa hàng [{store.name_store}] đã được xác nhận thành công. Hiện tại bạn đã có thể đăng sản phẩm bán hàng!</p>   
+                <p>Chúc bạn một ngày tốt lành.</p>   
+                 """
+            from_email = "healthcouchhcm@gmail.com"
+            to = [store_account_email]
+
+            try:
+                with mail.get_connection() as connection:
+                    msg = mail.EmailMessage(subject, html_content, from_email, to, connection=connection)
+                    msg.content_subtype = "html"
+                    success_count = msg.send()
+
+                if success_count == 1:
+                    return Response({'message': 'Email sent successfully.'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'message': 'Failed to send email.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception as e:
+                return Response({'message': f'Error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response('Xác nhận cửa hàng thành công', status=status.HTTP_200_OK)
+        else:
+            return Response('Cửa hàng đã được xác nhận', status=status.HTTP_400_BAD_REQUEST)
+
 
 class ShippingView(viewsets.ViewSet, generics.ListAPIView,
                    generics.CreateAPIView, generics.UpdateAPIView,
@@ -1275,6 +1402,26 @@ class CommentView(viewsets.ViewSet, generics.ListAPIView):
         if not self.delete_permissions(request):
             return Response("Bạn không có quyền thực hiện hành động này.", status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=['GET'])
+    def comments_get_byUser(self, request):
+        user_id = request.query_params.get('user_id')
+
+        if not user_id:
+            return Response({'error': 'user_id is required in FormData'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return Response({'error': 'Invalid user_id format'}, status=status.HTTP_400_BAD_REQUEST)
+
+        comments = CommentProduct.objects.filter(account=user_id, reply_idComment__isnull=True)
+
+        comment_serializer = CommentProductByUserSerializer(comments, many=True)
+
+        return Response({
+            'comments': comment_serializer.data,
+        }, status=status.HTTP_200_OK)
 
     @action(methods=['POST'], detail=True)
     def add_comment_product(self, request, pk):

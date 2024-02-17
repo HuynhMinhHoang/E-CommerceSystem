@@ -56,7 +56,18 @@ const HeaderComponent = ({ user, navigation }) => {
       <StatusBar barStyle="light-content" />
 
       <View style={styles.bgIconHeader}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            const userId = user && user.id;
+
+            //id login
+            if (userId) {
+              navigation.navigate("EditProfile");
+            } else {
+              navigation.navigate("Login");
+            }
+          }}
+        >
           <Image
             style={styles.iconInbox}
             source={require("../../images/setting.png")}
@@ -129,10 +140,10 @@ const HeaderComponent = ({ user, navigation }) => {
               <View>
                 <>
                   <Text style={styles.textNameUser}>{user.full_name}</Text>
-                  <Text style={styles.textFollow}>
+                  {/* <Text style={styles.textFollow}>
                     Đang theo dõi
                     <Text style={styles.textCountFollow}> 155</Text>
-                  </Text>
+                  </Text> */}
                 </>
               </View>
             </TouchableOpacity>
@@ -206,8 +217,8 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
           ></Image>
         </TouchableOpacity>
 
-        {/* <View style={styles.brContent1}></View> */}
-        {/* <TouchableOpacity style={styles.bgIconBill}>
+        <View style={styles.brContent1}></View>
+        <TouchableOpacity style={styles.bgIconBill}>
           <Image
             source={require("../../images/setting2.png")}
             style={styles.iconLike}
@@ -217,7 +228,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
             source={require("../../images/settingnext.png")}
             style={styles.iconNext}
           ></Image>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
         <View style={styles.brContent1}></View>
         <TouchableOpacity
@@ -258,7 +269,19 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
         </TouchableOpacity>
 
         <View style={styles.brContent1}></View>
-        <TouchableOpacity style={styles.bgIconBill}>
+        <TouchableOpacity
+          style={styles.bgIconBill}
+          onPress={() => {
+            const userId = user && user.id;
+
+            //id login
+            if (userId) {
+              navigation.navigate("MyReviewProduct");
+            } else {
+              navigation.navigate("Login");
+            }
+          }}
+        >
           <Image
             source={require("../../images/setting5.png")}
             style={styles.iconFollow}
@@ -271,7 +294,19 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
         </TouchableOpacity>
 
         <View style={styles.brContent1}></View>
-        <TouchableOpacity style={styles.bgIconBill}>
+        <TouchableOpacity
+          style={styles.bgIconBill}
+          onPress={() => {
+            const userId = user && user.id;
+
+            //id login
+            if (userId) {
+              navigation.navigate("EditProfile");
+            } else {
+              navigation.navigate("Login");
+            }
+          }}
+        >
           <Image
             source={require("../../images/setting6.png")}
             style={styles.iconFollow}

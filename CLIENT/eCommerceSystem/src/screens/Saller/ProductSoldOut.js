@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import DropDown from "react-native-dropdown-picker";
 import { useRoute } from "@react-navigation/native";
-
+import Modal from "react-native-modal";
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
 
@@ -77,34 +77,30 @@ const ContentComponent = ({
   setCountProduct,
 }) => {
   const [productList, setProductList] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [newQuantity, setNewQuantity] = useState("");
 
-  //call api product
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        endpoints.get_products_by_store_soldOut(storeId[0].id)
+      );
+      setProductList(response.data);
+      const numberOfProducts = response.data.length;
+
+      setCountProduct((count) =>
+        count !== numberOfProducts ? numberOfProducts : count
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          endpoints.get_products_by_store_soldOut(storeId[0].id)
-        );
-        setProductList(response.data);
-
-        const numberOfProducts = response.data.length;
-
-        setCountProduct((count) => {
-          if (count !== numberOfProducts) {
-            return numberOfProducts;
-          }
-          return count;
-        });
-        console.log("========", response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
   }, []);
 
-  //format price
   const formatPrice = (price) => {
     return price.toLocaleString("vi-VN", {
       style: "currency",
@@ -112,66 +108,164 @@ const ContentComponent = ({
     });
   };
 
-  //handle update
-  // const handleUpdateProduct = (product) => {
-  //   navigation.navigate("UpdateProduct", { product });
-  // };
+  const toggleModal = (product) => {
+    setSelectedProduct(product);
+    setModalVisible(!isModalVisible);
+  };
+
+  const handleUpdateQuantity = async () => {
+    try {
+      const newQuantityInt = parseInt(newQuantity, 10);
+      if (isNaN(newQuantityInt) || newQuantityInt < 0) {
+        Alert.alert("Vui lòng nhập lại!", "Hãy nhập số lượng!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("quantity", newQuantityInt);
+
+      await axios.patch(
+        endpoints.update_quantity(selectedProduct.id),
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      fetchData();
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
 
   return (
     <ScrollView>
       <View style={styles.containerContent}>
         <View style={styles.productRowContainer}>
           {productList && productList.length > 0 ? (
-            productList.map((product) => {
-              return (
-                <View key={product.id} style={styles.productContainer}>
-                  <TouchableOpacity
-                    style={{
-                      width: "30%",
-                      height: "100%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      // borderWidth: 1,
-                    }}
-                  >
-                    {product.images.length > 0 && (
-                      <Image
-                        style={{ width: "90%", height: 100 }}
-                        source={{ uri: product.images[0].thumbnail }}
-                      />
-                    )}
-                  </TouchableOpacity>
+            productList.map((product) => (
+              <View key={product.id} style={styles.productContainer}>
+                <TouchableOpacity
+                  style={{
+                    width: "30%",
+                    height: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {product.images.length > 0 && (
+                    <Image
+                      style={{ width: "90%", height: 100 }}
+                      source={{ uri: product.images[0].thumbnail }}
+                    />
+                  )}
+                </TouchableOpacity>
 
-                  <View
-                    style={{
-                      flexDirection: "column",
-                      width: "50%",
-                      // borderWidth: 1,
-                      marginLeft: 5,
-                      height: "100%",
-                      justifyContent: "center",
-                      // alignItems: "center",
-                    }}
-                  >
-                    <Text style={styles.nameProduct}>
-                      {product.name_product}
-                    </Text>
-                    <Text style={styles.priceProduct}>
-                      {formatPrice(product.price)}
-                    </Text>
-                    <Text style={styles.priceProductSold}>Đã bán: 123</Text>
-                    <Text style={styles.priceProductSold}>
-                      Tồn kho: {product.quantity}
-                    </Text>
-                  </View>
+                <View
+                  style={{
+                    flexDirection: "column",
+                    width: "48%",
+                    marginLeft: 5,
+                    height: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={styles.nameProduct}>{product.name_product}</Text>
+                  <Text style={styles.priceProduct}>
+                    {formatPrice(product.price)}
+                  </Text>
+                  <Text style={styles.priceProductSold}>Đã bán: 123</Text>
+                  <Text style={styles.priceProductSold}>
+                    Tồn kho: {product.quantity}
+                  </Text>
                 </View>
-              );
-            })
+
+                <View>
+                  <TouchableOpacity
+                    style={styles.btnUpdate}
+                    onPress={() => toggleModal(product)}
+                  >
+                    <Text style={{ color: "white" }}>Cập nhật</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))
           ) : (
             <Text>Không tìm thấy sản phẩm nào!</Text>
           )}
         </View>
       </View>
+
+      <Modal isVisible={isModalVisible}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              width: "80%",
+            }}
+          >
+            <Text
+              style={{ fontSize: 15, fontWeight: "bold", marginBottom: 10 }}
+            >
+              Cập nhật số lượng
+            </Text>
+            <TextInput
+              style={{
+                borderColor: "gray",
+                borderWidth: 1,
+                padding: 5,
+                paddingLeft: 10,
+                paddingRight: 10,
+                marginBottom: 15,
+                borderRadius: 5,
+              }}
+              placeholder="Nhập số lượng mới"
+              keyboardType="numeric"
+              value={newQuantity}
+              onChangeText={(text) => setNewQuantity(text)}
+            />
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-around" }}
+            >
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "white",
+                  padding: 6,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: "#ee4d2d",
+                  alignItems: "center",
+                }}
+                onPress={handleUpdateQuantity}
+              >
+                <Text style={{ color: "#ee4d2d" }}>Lưu</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "#d40000",
+                  padding: 6,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                  borderRadius: 5,
+                  alignItems: "center",
+                }}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={{ color: "white" }}>Hủy</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -314,18 +408,18 @@ const styles = StyleSheet.create({
     // paddingBottom: 15,
     // marginTop: 15,
   },
-  btnUpdate: {
-    backgroundColor: "#d40000",
-    height: 30,
-    width: 70,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#d40000",
-    marginRight: 20,
-  },
+  // btnUpdate: {
+  //   backgroundColor: "#d40000",
+  //   height: 30,
+  //   width: 70,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   marginBottom: 10,
+  //   borderRadius: 5,
+  //   borderWidth: 1,
+  //   borderColor: "#d40000",
+  //   marginRight: 20,
+  // },
   btnDelete: {
     backgroundColor: "#d40000",
     height: 30,
@@ -356,5 +450,16 @@ const styles = StyleSheet.create({
     // position: "absolute",
     // bottom: 8,
     // right: 10,
+  },
+  btnUpdate: {
+    backgroundColor: "#d40000",
+    height: 30,
+    width: 70,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: "#d40000",
+    marginRight: 10,
   },
 });

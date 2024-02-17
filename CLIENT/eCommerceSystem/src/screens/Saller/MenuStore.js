@@ -159,9 +159,7 @@ const ContentComponent = ({ navigation, storeData, route }) => {
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
-                    {store.address.length > 25
-                      ? `${store.address.substring(0, 25)}...`
-                      : store.address}
+                    {store.address}
                   </Text>
                 </View>
               </View>
@@ -215,6 +213,12 @@ const ContentComponent = ({ navigation, storeData, route }) => {
               right: -9,
               justifyContent: "center",
               alignItems: "center",
+            }}
+            onPress={() => {
+              navigation.navigate("OrderSold", {
+                storeId: storeData[0].id,
+                storeData: storeData,
+              });
             }}
           >
             <Text style={styles.textAddName1}>Xem lịch sử đơn hàng</Text>

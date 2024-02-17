@@ -8,10 +8,13 @@ export const endpoints = {
   facebook_login: "/facebook-login/",
   create_account: "/accounts/create_account/",
   current_account: "/accounts/current_account/",
+  update_account: (id) => `/accounts/${id}/update_account/`,
   roles: "/roles/",
   store: "/stores/",
   stores: (id) => `/stores/${id}/`,
   create_store: "/stores/create_store/",
+  get_store_to_confirm: "/stores/get_store_to_confirm/",
+  confirm_store: (id) => `/stores/${id}/confirm_store/`,
   products: "/products/",
   add_follow: (id) => `/stores/${id}/add_follow/`,
   get_list_follow_byUser: "/follows/get_list_follow_byUser/",
@@ -21,6 +24,7 @@ export const endpoints = {
   add_attribute: (id) => `/products/${id}/add_attribute/`,
   add_image: (id) => `/products/${id}/add_image/`,
   update_product: (id) => `/products/${id}/update_product/`,
+  update_quantity: (id) => `/products/${id}/update_quantity/`,
   get_product_by_category: "/products/get_product_by_category/",
   delete_attribute: (id) => `/attribute/${id}/`,
   delete_image: (id) => `/images/${id}/`,
@@ -46,6 +50,7 @@ export const endpoints = {
     `/stores/${id}/category_revenue_in_quarter/`,
   category_revenue_in_year: (id) => `/stores/${id}/category_revenue_in_year/`,
   create_order: "/orders/create_order/",
+  create_bill: "/bill/create_bill/",
   paymentTypes: "/paymentTypes/",
   shippingTypes: "/shippingTypes/",
   create_orderdetail: (id) => `/orders/${id}/create_orderdetail/`,
@@ -55,6 +60,7 @@ export const endpoints = {
   reply_to_comment: (id) => `/comments/${id}/reply_to_comment/`,
   update_comment: (id) => `/comments/${id}/update_comment/`,
   delete_comment: (id) => `/comments/${id}/delete_comment/`,
+  comments_get_byUser: "/comments/comments_get_byUser/",
   count_orders_and_comments: (id) => `/stores/${id}/count_orders_and_comments/`,
   get_orders_status_order_false: (id) =>
     `/stores/${id}/get_orders_status_order_false/`,
@@ -62,6 +68,8 @@ export const endpoints = {
   get_products_by_store: (id) => `/stores/${id}/get_products_by_store/`,
   get_comments_for_product: (id) => `/products/${id}/get_comments_for_product/`,
   get_replys_comments: (id) => `/comments/${id}/get_replys_comments/`,
+  get_orders_status_order_status_pay_true: (id) =>
+    `/stores/${id}/get_orders_status_order_status_pay_true/`,
 };
 
 const getToken = async () => {
