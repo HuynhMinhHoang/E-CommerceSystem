@@ -284,7 +284,15 @@ const ContentComponent = ({ navigation, storeData, route }) => {
 
       <View style={styles.bgAddName}>
         <View style={styles.bgItem1}>
-          <TouchableOpacity style={styles.btnItem1}>
+          <TouchableOpacity
+            style={styles.btnItem1}
+            onPress={() => {
+              navigation.navigate("StoreRevenue", {
+                storeId: storeData[0].id,
+                storeData: storeData,
+              });
+            }}
+          >
             <View
               style={{
                 backgroundColor: "#EBA41E",

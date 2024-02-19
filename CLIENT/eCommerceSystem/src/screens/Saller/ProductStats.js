@@ -159,6 +159,11 @@ const ContentComponent = ({ navigation }) => {
     frontColor: getRandomColor(),
   }));
 
+  const totalRevenueSelectedYears = barDataYear.reduce(
+    (sum, yearData) => sum + (yearData.value || 0),
+    0
+  );
+  // console.log("==========>>>>>>>", barDataYear);
   const barDataNull = [
     { value: 0, label: "", frontColor: getRandomColor() },
     { value: 0, label: "", frontColor: getRandomColor() },
@@ -338,7 +343,7 @@ const ContentComponent = ({ navigation }) => {
             showYAxisIndices
             barWidth={50}
             noOfSections={5}
-            maxValue={10000000}
+            maxValue={100000000}
             data={barDataMonth}
             isAnimated
             width={300}
@@ -346,7 +351,6 @@ const ContentComponent = ({ navigation }) => {
             showLine
             lineConfig={lineConfig}
           />
-
           <View style={{ flexDirection: "row" }}>
             <Text
               style={{
@@ -373,7 +377,7 @@ const ContentComponent = ({ navigation }) => {
                 (sum, monthData) => sum + (monthData?.total_quantity || 0),
                 0
               )}
-              sản phẩm
+               sản phẩm
             </Text>
           </View>
           {/* table month */}
@@ -421,7 +425,6 @@ const ContentComponent = ({ navigation }) => {
               ))}
             </View>
           </ScrollView>
-
           {/* quarter */}
           <Text
             style={{
@@ -439,7 +442,7 @@ const ContentComponent = ({ navigation }) => {
             showYAxisIndices
             barWidth={50}
             noOfSections={5}
-            maxValue={10000000}
+            maxValue={100000000}
             data={barDataQuarter}
             isAnimated
             width={300}
@@ -447,7 +450,53 @@ const ContentComponent = ({ navigation }) => {
             showLine
             lineConfig={lineConfig}
           />
-
+          {/* table quarter */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.tableContainer}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                marginTop: 20,
+              }}
+            >
+              {quarters.map((quarter, index) => (
+                <View
+                  key={index}
+                  style={{
+                    borderWidth: 0.8,
+                    padding: 10,
+                    borderRadius: 5,
+                    height: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 5,
+                    marginLeft: 5,
+                    borderColor: "#a0a0a0",
+                  }}
+                >
+                  <Text style={{ color: "#EE4D2D", marginBottom: 5 }}>
+                    {quarter}
+                  </Text>
+                  <Text style={{ fontWeight: "500" }}>
+                    {productStatsQuarter[index]?.total_quantity || 0}sp
+                  </Text>
+                  <Text style={{ fontSize: 13, marginTop: 10 }}>
+                    [
+                    {formatPrice(
+                      productStatsQuarter[index]?.total_revenue || 0
+                    )}
+                    ]
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
           {/* year */}
           <Text
             style={{
@@ -460,14 +509,13 @@ const ContentComponent = ({ navigation }) => {
           >
             Thống kê năm [ {selectedYear} ] đến năm [ 2024 ]
           </Text>
-
           {barDataYear.length > 0 ? (
             <BarChart
               showFractionalValue
               showYAxisIndices
               barWidth={50}
               noOfSections={5}
-              maxValue={30000000}
+              maxValue={100000000}
               data={barDataYear}
               isAnimated
               width={300}
@@ -481,7 +529,7 @@ const ContentComponent = ({ navigation }) => {
               showYAxisIndices
               barWidth={50}
               noOfSections={5}
-              maxValue={10000000}
+              maxValue={100000000}
               data={barDataNull}
               isAnimated
               width={300}
@@ -490,6 +538,42 @@ const ContentComponent = ({ navigation }) => {
               lineConfig={lineConfig}
             />
           )}
+          {/* table year */}
+          <View
+            style={{
+              marginTop: 30,
+              flexDirection: "column",
+              backgroundColor: "#EE4D2D",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 40,
+              // height: 20,
+              padding: 10,
+              borderRadius: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "400",
+                marginLeft: 5,
+                fontSize: 15,
+              }}
+            >
+              Tổng doanh thu từ năm [ {selectedYear} ] đến [ 2024 ]:
+            </Text>
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "500",
+                marginLeft: 5,
+                fontSize: 16,
+                marginTop: 5,
+              }}
+            >
+              {formatPrice(totalRevenueSelectedYears)}
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>

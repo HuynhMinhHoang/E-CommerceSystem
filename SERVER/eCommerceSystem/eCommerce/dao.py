@@ -2,9 +2,8 @@
 from datetime import datetime, timedelta
 
 from django.db.models import Count, Sum, F, FloatField, ExpressionWrapper
-from django.db.models.functions import Cast
 
-from .models import Account, UserRole, Product, OrderDetail
+from .models import Account, UserRole, Product, OrderDetail, Order
 
 
 def load_account(params={}):
@@ -131,7 +130,8 @@ def product_revenue_statistics_in_month(store_id, product_id, year):
 
             product_revenue = (
                     Product.objects.filter(id=product_id, store_id=store_id,
-                                           orderdetail__order__created_at__date__range=[start_date, end_date])
+                                           orderdetail__order__created_at__date__range=[start_date, end_date],
+                                           orderdetail__order__status_pay=True)
                     .annotate(
                         total_revenue=ExpressionWrapper(
                             Sum(F('orderdetail__quantity') * F('price'), output_field=FloatField()),
@@ -173,7 +173,8 @@ def product_revenue_statistics_in_year(store_id, year, product_id):
 
             product_revenue = (
                     Product.objects.filter(id=product_id, store_id=store_id,
-                                           orderdetail__order__created_at__date__range=[start_date, end_date])
+                                           orderdetail__order__created_at__date__range=[start_date, end_date],
+                                           orderdetail__order__status_pay=True)
                     .annotate(
                         total_revenue=ExpressionWrapper(
                             Sum(F('orderdetail__quantity') * F('price'), output_field=FloatField()),
@@ -210,7 +211,8 @@ def product_revenue_statistics_in_quarter(store_id, year, product_id):
 
             product_revenue = (
                 Product.objects.filter(id=product_id, store_id=store_id,
-                                       orderdetail__order__created_at__date__range=[start_date, end_date])
+                                       orderdetail__order__created_at__date__range=[start_date, end_date],
+                                       orderdetail__order__status_pay=True)
                 .annotate(
                     total_revenue=ExpressionWrapper(
                         Sum(F('orderdetail__quantity') * F('price'), output_field=FloatField()),
@@ -250,7 +252,8 @@ def category_revenue_statistics_in_month(store_id, year, category_id):
 
             category_revenue = (
                 Product.objects.filter(category=category_id, store_id=store_id,
-                                       orderdetail__order__created_at__date__range=[start_date, end_date])
+                                       orderdetail__order__created_at__date__range=[start_date, end_date],
+                                       orderdetail__order__status_pay=True)
                 .annotate(
                     total_revenue=ExpressionWrapper(
                         Sum(F('orderdetail__quantity') * F('price'), output_field=FloatField()),
@@ -293,7 +296,8 @@ def category_revenue_statistics_in_year(store_id, year, category_id):
 
             category_revenue = (
                 Product.objects.filter(category=category_id, store_id=store_id,
-                                       orderdetail__order__created_at__date__range=[start_date, end_date])
+                                       orderdetail__order__created_at__date__range=[start_date, end_date],
+                                       orderdetail__order__status_pay=True)
                 .annotate(
                     total_revenue=ExpressionWrapper(
                         Sum(F('orderdetail__quantity') * F('price'), output_field=FloatField()),
@@ -334,7 +338,8 @@ def category_revenue_statistics_in_quarter(store_id, year, category_id):
 
             category_revenue = (
                 Product.objects.filter(category=category_id, store_id=store_id,
-                                       orderdetail__order__created_at__date__range=[start_date, end_date])
+                                       orderdetail__order__created_at__date__range=[start_date, end_date],
+                                       orderdetail__order__status_pay=True)
                 .annotate(
                     total_revenue=ExpressionWrapper(
                         Sum(F('orderdetail__quantity') * F('price'), output_field=FloatField()),
@@ -356,4 +361,5 @@ def category_revenue_statistics_in_quarter(store_id, year, category_id):
         data.extend(quarterly_data)
 
     return data
+
 

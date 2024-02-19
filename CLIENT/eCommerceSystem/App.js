@@ -47,6 +47,7 @@ import OrderSold from "./src/screens/Saller/OrderSold";
 import OrderPendingList from "./src/screens/Saller/OrderPendingList";
 import ProductListComments from "./src/screens/Saller/ProductListComments";
 import CommentDetail from "./src/screens/Saller/CommentDetail";
+import StoreRevenue from "./src/screens/Saller/StoreRevenue";
 
 import CartReducer from "./src/reducer/CartReducer";
 import { CartProvider } from "./src/context/CartContext";
@@ -89,6 +90,7 @@ const RootComponent = () => {
               <Stack.Screen name="CategoryStats" component={CategoryStats} />
               <Stack.Screen name="BillDetail" component={BillDetail} />
               <Stack.Screen name="Pay" component={Pay} />
+              <Stack.Screen name="StoreRevenue" component={StoreRevenue} />
               <Stack.Screen
                 name="MyReviewProduct"
                 component={MyReviewProduct}

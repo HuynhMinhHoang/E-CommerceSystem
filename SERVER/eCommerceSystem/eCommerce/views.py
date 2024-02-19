@@ -838,6 +838,18 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Store.objects.all()
     serializer_class = serializers.StoreSerializer
 
+    @action(detail=True, methods=['get'])
+    def get_revenue_store(self, request, pk=None):
+        store_id = self.kwargs.get('pk', None)
+
+        order_details = OrderDetail.objects.filter(product__store__id=store_id)
+        order_ids = order_details.values_list('order__id', flat=True)
+
+        total_revenue = Bill.objects.filter(order__id__in=order_ids).aggregate(Sum('total_amount'))[
+                            'total_amount__sum'] or 0
+
+        return Response({'store_id': store_id, 'total_revenue': total_revenue})
+
     @action(methods=['POST'], detail=True)
     def add_follow(self, request, pk):
         store_id = self.get_object()

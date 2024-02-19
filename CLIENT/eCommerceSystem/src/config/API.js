@@ -65,6 +65,7 @@ export const endpoints = {
   get_orders_status_order_false: (id) =>
     `/stores/${id}/get_orders_status_order_false/`,
   update_order_status: (id) => `/stores/${id}/update_order_status/`,
+  get_revenue_store: (id) => `/stores/${id}/get_revenue_store/`,
   get_products_by_store: (id) => `/stores/${id}/get_products_by_store/`,
   get_comments_for_product: (id) => `/products/${id}/get_comments_for_product/`,
   get_replys_comments: (id) => `/comments/${id}/get_replys_comments/`,
