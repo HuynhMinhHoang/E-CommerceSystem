@@ -562,6 +562,22 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @action(detail=True, methods=['POST'])
+    def add_tag(self, request, pk=None):
+        product = self.get_object()
+        product.tag = True
+        product.save()
+        serializer = ProductSerializer(product)
+        return Response({"product": serializer.data}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['POST'])
+    def remove_tag(self, request, pk=None):
+        product = self.get_object()
+        product.tag = False
+        product.save()
+        serializer = ProductSerializer(product)
+        return Response({"product": serializer.data}, status=status.HTTP_200_OK)
+
 
 class AttributeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.DestroyAPIView):
     queryset = Attribute.objects.all()
@@ -837,6 +853,19 @@ class BillViewSet(viewsets.ViewSet, generics.ListAPIView):
 class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Store.objects.all()
     serializer_class = serializers.StoreSerializer
+
+    @action(detail=True, methods=['GET'])
+    def list_products_tag(self, request, pk=None):
+        try:
+            store = Store.objects.get(id=pk)
+            products = Product.objects.filter(store=store, status=True, quantity__gt=0).order_by('tag')
+            serializer = ProductSerializer(products, many=True)
+
+            serialized_data = [product_data for product_data in serializer.data]
+
+            return Response(serialized_data, status=status.HTTP_200_OK)
+        except Store.DoesNotExist:
+            return Response({'error': 'Cửa hàng không tồn tại'}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['get'])
     def get_revenue_store(self, request, pk=None):
@@ -1172,7 +1201,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
                 return Response({'error': 'Bạn không có lọai mặt hàng'}, status=status.HTTP_404_NOT_FOUND)
 
             product = Product.objects.create(name_product=name_product, store=store, category=category,
-                                             quantity=quantity, description=description, price=price)
+                                             quantity=quantity, description=description, price=price, tag=False)
             product.save()
             return Response(serializers.ProductSerializer(product).data, status=status.HTTP_201_CREATED)
 

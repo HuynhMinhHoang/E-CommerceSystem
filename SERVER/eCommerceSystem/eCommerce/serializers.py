@@ -122,7 +122,7 @@ class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
         fields = ["id", "name_product", "price", "description", "status", "quantity", "store_info", "category_info",
-                  'product_attributes', 'images']
+                  'product_attributes', 'images', 'tag']
 
 
 class ProductQuantityUpdateSerializer(serializers.Serializer):

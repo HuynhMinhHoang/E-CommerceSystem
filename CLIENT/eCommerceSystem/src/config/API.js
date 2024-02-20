@@ -40,6 +40,9 @@ export const endpoints = {
   product_revenue_in_quarter: (id) =>
     `/stores/${id}/product_revenue_in_quarter/`,
   product_revenue_in_year: (id) => `/stores/${id}/product_revenue_in_year/`,
+  list_products_tag: (id) => `/stores/${id}/list_products_tag/`,
+  add_tag: (id) => `/products/${id}/add_tag/`,
+  remove_tag: (id) => `/products/${id}/remove_tag/`,
   sort_by_name: "/products/sort_by_name/",
   sort_by_price_up: "/products/sort_by_price_up/",
   sort_by_price_down: "/products/sort_by_price_down/",

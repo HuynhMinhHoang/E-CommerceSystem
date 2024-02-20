@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios, { endpoints } from "../../config/API";
+import * as Animatable from "react-native-animatable";
 
 import { LoginContext } from "../../../App";
 import {
@@ -180,7 +181,6 @@ const ContentComponent = ({ navigation, products, setProducts }) => {
       currency: "VND",
     });
   };
-
   //Imgcategory
   const imgCategory = [
     { image: require("../../images/dienthoai.png") },
@@ -290,13 +290,37 @@ const ContentComponent = ({ navigation, products, setProducts }) => {
                     key={product.product.id}
                     style={styles.productContainer}
                   >
-                    {/* {product.images.length > 0 && ( */}
-                      <Image
-                        style={{ width: "100%", height: 170 }}
-                        source={{ uri: product.product.images[0].thumbnail }}
-                        resizeMode="cover"
-                      />
-                    {/* )} */}
+                    {/* tag */}
+                    {product.product.tag === true && (
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: -10,
+                          right: 0,
+                          zIndex: 1,
+                        }}
+                      >
+                        <Animatable.View
+                          animation="flash"
+                          iterationCount="infinite"
+                          duration={2000}
+                        >
+                          <Image
+                            source={require("../../images/hot1.png")}
+                            style={[
+                              styles.newTag,
+                              { transform: [{ rotate: "40deg" }] },
+                            ]}
+                          ></Image>
+                        </Animatable.View>
+                      </View>
+                    )}
+
+                    <Image
+                      style={{ width: "100%", height: 170 }}
+                      source={{ uri: product.product.images[0].thumbnail }}
+                      resizeMode="cover"
+                    />
                     <Text style={styles.nameProduct}>
                       {product.product.name_product}
                     </Text>
@@ -389,8 +413,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     // paddingBottom: 10,
     // elevation: 2
+    // borderWidth: 5,
+
     position: "relative",
-    // borderRadius: 5,
+    borderRadius: 5,
     // borderWidth: 5
   },
   nameProduct: {
@@ -757,5 +783,9 @@ const styles = StyleSheet.create({
     size: "large",
     transform: [{ scale: 1.5 }],
     backgroundColor: "white",
+  },
+  newTag: {
+    width: 50,
+    height: 50,
   },
 });

@@ -328,7 +328,7 @@ const ContentComponent = ({ navigation, storeData, route }) => {
           >
             <View
               style={{
-                backgroundColor: "#F14D2F",
+                backgroundColor: "#0046AB",
                 padding: 5,
                 borderRadius: 8,
               }}
@@ -354,6 +354,43 @@ const ContentComponent = ({ navigation, storeData, route }) => {
           <TouchableOpacity
             style={styles.btnItem1}
             onPress={() => {
+              navigation.navigate("TagProduct", {
+                storeId: storeData[0].id,
+              });
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#ff0095",
+                padding: 5,
+                borderRadius: 8,
+              }}
+            >
+              <Image
+                source={require("../../images/ad.png")}
+                style={styles.iconItem}
+              ></Image>
+            </View>
+
+            <Text
+              style={{
+                fontSize: 13,
+                color: "#222222",
+                marginTop: 10,
+                fontWeight: "500",
+              }}
+            >
+              Quảng cáo
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.bgAddName}>
+        <View style={styles.bgItem11}>
+          <TouchableOpacity
+            style={styles.btnItem1}
+            onPress={() => {
               navigation.navigate("ProductList", {
                 storeData: storeData,
               });
@@ -361,7 +398,7 @@ const ContentComponent = ({ navigation, storeData, route }) => {
           >
             <View
               style={{
-                backgroundColor: "#EBA41E",
+                backgroundColor: "#7b00e0",
                 padding: 5,
                 borderRadius: 8,
               }}
@@ -381,43 +418,6 @@ const ContentComponent = ({ navigation, storeData, route }) => {
               }}
             >
               Sản phẩm
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.bgAddName}>
-        <View style={styles.bgItem11}>
-          <TouchableOpacity
-            style={styles.btnItem1}
-            onPress={() => {
-              navigation.navigate("ProductSoldOut", {
-                storeId: storeData,
-              });
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#0046AB",
-                padding: 5,
-                borderRadius: 8,
-              }}
-            >
-              <Image
-                source={require("../../images/soldout.png")}
-                style={styles.iconItem}
-              ></Image>
-            </View>
-
-            <Text
-              style={{
-                fontSize: 13,
-                color: "#222222",
-                marginTop: 10,
-                fontWeight: "500",
-              }}
-            >
-              Hết hàng
             </Text>
           </TouchableOpacity>
 
@@ -457,7 +457,9 @@ const ContentComponent = ({ navigation, storeData, route }) => {
           <TouchableOpacity
             style={styles.btnItem1}
             onPress={() => {
-              navigation.navigate("ProductReport");
+              navigation.navigate("ProductSoldOut", {
+                storeId: storeData,
+              });
             }}
           >
             <View
@@ -468,7 +470,7 @@ const ContentComponent = ({ navigation, storeData, route }) => {
               }}
             >
               <Image
-                source={require("../../images/warning.png")}
+                source={require("../../images/soldout.png")}
                 style={styles.iconItem}
               ></Image>
             </View>
@@ -481,7 +483,7 @@ const ContentComponent = ({ navigation, storeData, route }) => {
                 fontWeight: "500",
               }}
             >
-              Vi phạm
+              Hết hàng
             </Text>
           </TouchableOpacity>
         </View>

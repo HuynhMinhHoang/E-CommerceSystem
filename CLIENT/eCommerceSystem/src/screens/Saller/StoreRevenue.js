@@ -58,7 +58,7 @@ const HeaderComponent = () => {
   );
 };
 
-const ContentComponent = ({ navigatione }) => {
+const ContentComponent = ({ navigation }) => {
   const route = useRoute();
   const { storeId } = route.params;
   const [totalRevenue, setTotalRevenue] = useState(null);
@@ -85,6 +85,7 @@ const ContentComponent = ({ navigatione }) => {
 
     getRevenue();
   }, [storeId]);
+
   return (
     <View>
       <View style={styles.bgAddImg}>
@@ -108,16 +109,35 @@ const ContentComponent = ({ navigatione }) => {
           // borderWidth: 1,
           // padding: 5,
         }}
+        onPress={() => {
+          navigation.navigate("TagProduct", {
+            storeId: storeId,
+            totalRevenue: totalRevenue,
+          });
+        }}
       >
-        <View>
+        <View
+          style={{
+            backgroundColor: "#ee4d2d",
+            padding: 5,
+            borderRadius: 5,
+          }}
+        >
           <Image
-            source={require("../../images/card1.png")}
-            style={styles.iconBack}
+            source={require("../../images/ad.png")}
+            style={styles.iconItem}
           ></Image>
         </View>
         <View>
-          <Text style={{ fontSize: 15, marginLeft: 10 }}>
-            Doanh thu đơn hàng
+          <Text
+            style={{
+              fontSize: 15,
+              marginLeft: 10,
+              fontWeight: "400",
+              color: "#242424",
+            }}
+          >
+            Quảng cáo sản phẩm
           </Text>
         </View>
 
@@ -227,7 +247,7 @@ const styles = StyleSheet.create({
     width: windownWidth - 30,
     marginLeft: 15,
     justifyContent: "center",
-    marginTop: 5,
+    marginTop: 6,
   },
   btnAddImg: {
     backgroundColor: "white",
@@ -378,8 +398,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   iconItem: {
-    height: 22,
-    width: 22,
+    height: 20,
+    width: 20,
   },
   btnItem1: {
     height: 85,

@@ -59,7 +59,7 @@ class Product(BaseModel):
     store = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='products')
     product_order = models.ManyToManyField('Order', through='OrderDetail', related_name='product_order', null=True)
-
+    tag = models.BooleanField(default=False, null=True)
     def __str__(self):
         return self.name_product
 

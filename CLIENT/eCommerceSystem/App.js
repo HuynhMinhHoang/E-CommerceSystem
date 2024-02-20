@@ -23,7 +23,7 @@ import MyTabs from "./src/screens/Customer/MyTabs";
 import ProductList from "./src/screens/Saller/ProductList";
 import ProductSoldOut from "./src/screens/Saller/ProductSoldOut";
 import ProductPending from "./src/screens/Saller/ProductPending";
-import ProductReport from "./src/screens/Saller/ProductReport";
+import TagProduct from "./src/screens/Saller/TagProduct";
 import LoginReducer from "./src/reducer/LoginReducer";
 import AddStore from "./src/screens/Saller/AddStore";
 import UpdateProduct from "./src/screens/Saller/UpdateProduct";
@@ -83,7 +83,7 @@ const RootComponent = () => {
               <Stack.Screen name="ProductList" component={ProductList} />
               <Stack.Screen name="ProductSoldOut" component={ProductSoldOut} />
               <Stack.Screen name="ProductPending" component={ProductPending} />
-              <Stack.Screen name="ProductReport" component={ProductReport} />
+              <Stack.Screen name="TagProduct" component={TagProduct} />
               <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
               <Stack.Screen name="ProductStats" component={ProductStats} />
               <Stack.Screen name="ChooseStats" component={ChooseStats} />
