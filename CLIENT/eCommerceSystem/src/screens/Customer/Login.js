@@ -227,13 +227,6 @@ const FooterComponent = ({ navigation }) => {
       const photoURL = userSignIn._tokenResponse?.photoUrl;
       const uid = userSignIn.user.uid;
 
-      console.log("Received data:");
-      console.log("idToken:", idToken);
-      console.log("displayName:", displayName);
-      console.log("email:", email);
-      console.log("uid:", uid);
-      console.log("photoURL:", photoURL);
-
       await sendGoogleIdTokenToServer({
         idToken,
         displayName,
@@ -266,15 +259,21 @@ const FooterComponent = ({ navigation }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      // console.log("Server Response:", response.data);
-      const result = response.data;
 
-      console.log("User Google:", result.user);
+      console.log("Received data---:");
+      console.log("idToken---:", idToken);
+      console.log("displayName---:", displayName);
+      console.log("email---:", email);
+      console.log("uid---:", uid);
+      console.log("photoURL---:", photoURL);
+      console.log("Phản hồi từ Server:", response.data);
+
+      // console.log("User Google---:", result.user);
 
       dispatch({
         type: "login",
         payload: {
-          ...result.user,
+          ...response.data.user,
           avt: photoURL,
           email: email,
           full_name: displayName,

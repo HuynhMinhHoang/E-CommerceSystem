@@ -101,7 +101,6 @@ class AccountViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIV
 
 # login google
 def generate_random_string(length):
-    """Tạo chuỗi ngẫu nhiên có ký tự và số."""
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
 
@@ -161,6 +160,7 @@ def google_login(request):
                     return JsonResponse(
                         {'success': True, 'message': 'Account created and logged in', 'user': user_data})
             except Exception as e:
+                print(f"Error processing request: {e}")
                 return JsonResponse({'success': False, 'message': 'Error processing request'})
         return JsonResponse({'success': False, 'message': 'No idToken provided'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
