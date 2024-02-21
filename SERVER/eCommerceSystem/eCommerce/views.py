@@ -566,6 +566,8 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
     def add_tag(self, request, pk=None):
         product = self.get_object()
         product.tag = True
+        product.tag_start_date = request.data.get('tag_start_date')
+        product.tag_end_date = request.data.get('tag_end_date')
         product.save()
         serializer = ProductSerializer(product)
         return Response({"product": serializer.data}, status=status.HTTP_200_OK)
@@ -574,6 +576,8 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
     def remove_tag(self, request, pk=None):
         product = self.get_object()
         product.tag = False
+        product.tag_start_date = None
+        product.tag_end_date = None
         product.save()
         serializer = ProductSerializer(product)
         return Response({"product": serializer.data}, status=status.HTTP_200_OK)

@@ -145,6 +145,7 @@ const ContentComponent = ({ navigation }) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
+    
     setDateOfBirth(currentDate.toLocaleDateString());
 
     const formattedDateOfBirth = currentDate.toISOString().split("T")[0];

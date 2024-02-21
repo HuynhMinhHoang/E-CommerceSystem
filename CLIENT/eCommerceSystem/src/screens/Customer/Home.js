@@ -309,7 +309,7 @@ const ContentComponent = ({ navigation, products, setProducts }) => {
                             source={require("../../images/hot1.png")}
                             style={[
                               styles.newTag,
-                              { transform: [{ rotate: "40deg" }] },
+                              { transform: [{ rotate: "33deg" }] },
                             ]}
                           ></Image>
                         </Animatable.View>

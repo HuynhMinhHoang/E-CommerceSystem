@@ -60,6 +60,8 @@ class Product(BaseModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='products')
     product_order = models.ManyToManyField('Order', through='OrderDetail', related_name='product_order', null=True)
     tag = models.BooleanField(default=False, null=True)
+    tag_start_date = models.DateTimeField(null=True, blank=True)
+    tag_end_date = models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return self.name_product
 

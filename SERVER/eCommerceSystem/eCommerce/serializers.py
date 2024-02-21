@@ -122,7 +122,7 @@ class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
         fields = ["id", "name_product", "price", "description", "status", "quantity", "store_info", "category_info",
-                  'product_attributes', 'images', 'tag']
+                  'product_attributes', 'images', 'tag', 'tag_start_date', 'tag_end_date']
 
 
 class ProductQuantityUpdateSerializer(serializers.Serializer):
@@ -190,8 +190,8 @@ class CommentProductByUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CommentProduct
-        fields = ['id', 'account_info', 'rating', 'content', 'reply_idComment', 'orderDetail', 'created_at', 'product_info']
-
+        fields = ['id', 'account_info', 'rating', 'content', 'reply_idComment', 'orderDetail', 'created_at',
+                  'product_info']
 
 
 class ProductWithCommentsSerializer(serializers.ModelSerializer):
