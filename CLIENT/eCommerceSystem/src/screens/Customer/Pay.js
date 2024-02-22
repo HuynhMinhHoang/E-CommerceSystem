@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useCart } from "../../context/CartContext";
 import { useRoute } from "@react-navigation/native";
-import { LoginContext } from "../../../App";
+import { useLogin } from "../../context/LoginContext";
 import WebView from "react-native-webview";
 
 const windownWidth = Dimensions.get("window").width;
@@ -25,7 +25,7 @@ export default Pay = ({ navigation }) => {
   const { totalPrice, cartItems, itemCount } = route.params;
   const [newOrderId, setNewOrderId] = useState();
 
-  const [user, dispatch] = useContext(LoginContext);
+  const [user, dispatch] = useLogin();
   const [note, setNote] = useState();
 
   const [selectedShippingOption, setSelectedShippingOption] = useState(null);

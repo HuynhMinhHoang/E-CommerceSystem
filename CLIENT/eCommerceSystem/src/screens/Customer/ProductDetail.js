@@ -17,7 +17,7 @@ import { AirbnbRating, Rating } from "react-native-ratings";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
-import { LoginContext } from "../../../App";
+import { useLogin } from "../../context/LoginContext";
 
 const { width } = Dimensions.get("window");
 const windownWidth = Dimensions.get("window").width;
@@ -29,7 +29,7 @@ export default ProductDetail = ({ navigation }) => {
   // const productId = 8;
   // console.log(productId);
 
-  const [user, dispatch] = useContext(LoginContext);
+  const [user, dispatch] = useLogin();
 
   return (
     <View style={styles.viewContainer}>
@@ -53,6 +53,9 @@ export default ProductDetail = ({ navigation }) => {
 };
 
 const HeaderComponent = ({ navigation }) => {
+  const [{ cartItems }, dispatchCart] = useCart();
+  const itemCount = cartItems.length;
+
   return (
     <View style={styles.containerHeader}>
       <View style={styles.signIn}>
@@ -69,10 +72,34 @@ const HeaderComponent = ({ navigation }) => {
             navigation.navigate("Cart");
           }}
         >
-          <Image
-            source={require("../../images/222.png")}
-            style={styles.iconFB}
-          ></Image>
+          <View>
+            <Image
+              source={require("../../images/222.png")}
+              style={styles.iconFB}
+            ></Image>
+            <Text
+              style={{
+                position: "absolute",
+                top: -9,
+                right: -10,
+                color: "white",
+                paddingTop: 2,
+                paddingBottom: 1,
+                paddingLeft: 6,
+                paddingRight: 6,
+                borderRadius: 100,
+                backgroundColor: "#c20302",
+                fontSize: 12,
+                borderWidth: 1,
+                borderColor: "white",
+                textAlign: "center",
+                alignItems: "center",
+                fontWeight: "500",
+              }}
+            >
+              {itemCount}
+            </Text>
+          </View>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.backgroundMess}>
@@ -613,8 +640,8 @@ const ContentComponent = ({ productId, navigation }) => {
 };
 
 const FooterComponent = ({ navigation, productId, user }) => {
-  //add to cart
   const [{ cartItems }, dispatchCart] = useCart();
+  //add to cart
   const [products, setProducts] = useState();
 
   const handleAddToCart = () => {

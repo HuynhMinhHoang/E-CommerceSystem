@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import DropDown from "react-native-dropdown-picker";
 import axios, { endpoints, authApi } from "../../config/API";
-import { LoginContext } from "../../../App";
+import { useLogin } from "../../context/LoginContext";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
@@ -62,7 +62,7 @@ const ContentComponent = ({ navigation }) => {
   const [nameStore, setNameStore] = useState("");
   const [address, setAddress] = useState("");
   const [avatar, setAvatar] = useState(null);
-  const [user, dispatch] = useContext(LoginContext);
+  const [user, dispatch] = useLogin();
 
   //upload avt
   const pickImage = async () => {
@@ -157,7 +157,7 @@ const ContentComponent = ({ navigation }) => {
               source={require("../../images/upload.png")}
               style={{ width: 30, height: 30 }}
             />
-            <Text style={styles.textInputAVT}>Tải ảnh đại diện</Text>
+            <Text style={styles.textInputAVT}>Tải ảnh đại diện cửa hàng</Text>
           </View>
         )}
       </TouchableOpacity>

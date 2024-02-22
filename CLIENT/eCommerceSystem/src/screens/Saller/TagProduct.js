@@ -21,7 +21,6 @@ import {
 import DropDown from "react-native-dropdown-picker";
 import axios, { endpoints } from "../../config/API";
 
-// import { LoginContext } from "../../../App";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;

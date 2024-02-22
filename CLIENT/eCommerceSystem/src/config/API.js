@@ -74,6 +74,7 @@ export const endpoints = {
   get_replys_comments: (id) => `/comments/${id}/get_replys_comments/`,
   get_orders_status_order_status_pay_true: (id) =>
     `/stores/${id}/get_orders_status_order_status_pay_true/`,
+  compare_product: "/products/compare_product/",
 };
 
 const getToken = async () => {

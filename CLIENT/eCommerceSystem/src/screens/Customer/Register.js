@@ -14,7 +14,6 @@ import {
   View,
 } from "react-native";
 import DropDown from "react-native-dropdown-picker";
-import { LoginContext } from "../../../App";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
@@ -145,7 +144,7 @@ const ContentComponent = ({ navigation }) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
-    
+
     setDateOfBirth(currentDate.toLocaleDateString());
 
     const formattedDateOfBirth = currentDate.toISOString().split("T")[0];

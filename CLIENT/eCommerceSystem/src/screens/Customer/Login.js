@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { LoginContext } from "../../../App";
+import { useLogin } from "../../context/LoginContext";
 import "expo-dev-client";
 import {
   GoogleSignin,
@@ -95,7 +95,7 @@ const ContentComponent = ({ navigation }) => {
     setPassHidden(!passHidden);
   };
 
-  const [user, dispatch] = useContext(LoginContext);
+  const [user, dispatch] = useLogin();
 
   //login
   const handleLogin = async () => {
@@ -199,7 +199,7 @@ const ContentComponent = ({ navigation }) => {
 };
 
 const FooterComponent = ({ navigation }) => {
-  const [users, dispatch] = useContext(LoginContext);
+  const [users, dispatch] = useLogin();
 
   //login google
   const [initializingGoogle, setInitializingGoogle] = useState(true);

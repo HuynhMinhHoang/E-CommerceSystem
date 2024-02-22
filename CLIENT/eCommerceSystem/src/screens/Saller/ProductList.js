@@ -13,14 +13,14 @@ import {
   View,
 } from "react-native";
 import DropDown from "react-native-dropdown-picker";
-import { LoginContext } from "../../../App";
+import { useLogin } from "../../context/LoginContext";
 import { useRoute } from "@react-navigation/native";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
 
 export default ProductList = ({ navigation }) => {
-  const [user, dispatch] = useContext(LoginContext);
+  const [user, dispatch] = useLogin();
   const [countProduct, setCountProduct] = useState(0);
   const [products, setProducts] = useState([]);
   const route = useRoute();

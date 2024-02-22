@@ -11,7 +11,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.db import models, transaction
 from django.db.models import Sum, Avg, Q
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import redirect, get_list_or_404
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -459,39 +459,46 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
     def compare_product(self, request):
         id_product_1 = request.query_params.get('id_1')
         id_product_2 = request.query_params.get('id_2')
-        pro_1 = []
-        pro_2 = []
-        try:
-            product_1 = Product.objects.filter(id=id_product_1)
-        except:
-            return Response('Không tìm thấy sản phẩm', status=status.HTTP_400_BAD_REQUEST)
-        try:
-            product_2 = Product.objects.filter(id=id_product_2)
-        except:
-            return Response('Không tìm thấy sản phẩm', status=status.HTTP_400_BAD_REQUEST)
-        # breakpoint()
-        for p_1 in product_1:
-            attribute_data = AttributeSerializer(p_1.attribute.all(), many=True).data
-            pro_1.append({
-                'name_prodcut': p_1.name_product,
-                'price': p_1.price,
-                'description': p_1.description,
-                'product_attributes': attribute_data,
-                'store': p_1.store.name_store
-            })
-            self.calculate_product_variables(pro_1[-1])
+        category_id_1 = None
+        category_id_2 = None
 
-        for p_2 in product_2:
-            attribute_data = AttributeSerializer(p_2.attribute.all(), many=True).data
-            pro_2.append({
-                'name_product': p_2.name_product,
-                'price': p_2.price,
-                'description': p_2.description,
-                'product_attributes': attribute_data,
-                'store': p_2.store.name_store
+        try:
+            product_1 = Product.objects.get(id=id_product_1)
+            category_id_1 = product_1.category.id
+        except Product.DoesNotExist:
+            raise Http404("Không tìm thấy sản phẩm 1")
+
+        try:
+            product_2 = Product.objects.get(id=id_product_2)
+            category_id_2 = product_2.category.id
+        except Product.DoesNotExist:
+            raise Http404("Không tìm thấy sản phẩm 2")
+
+        if category_id_1 == category_id_2:
+            pro_1 = []
+            pro_2 = []
+
+            attribute_data_1 = AttributeSerializer(product_1.attribute.all(), many=True).data
+            pro_1.append({
+                'name_product': product_1.name_product,
+                'price': product_1.price,
+                'description': product_1.description,
+                'product_attributes': attribute_data_1,
+                'store': product_1.store.name_store
             })
-            self.calculate_product_variables(pro_2[-1])
-        return Response({'product_1': pro_1, 'product_2': pro_2}, status=status.HTTP_200_OK)
+
+            attribute_data_2 = AttributeSerializer(product_2.attribute.all(), many=True).data
+            pro_2.append({
+                'name_product': product_2.name_product,
+                'price': product_2.price,
+                'description': product_2.description,
+                'product_attributes': attribute_data_2,
+                'store': product_2.store.name_store
+            })
+
+            return Response({'product_1': pro_1, 'product_2': pro_2}, status=status.HTTP_200_OK)
+        else:
+            return Response('Sản phẩm không thuộc cùng một danh mục', status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=False)
     def sort_by_name(self, request):

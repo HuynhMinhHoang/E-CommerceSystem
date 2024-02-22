@@ -11,13 +11,13 @@ import {
   View,
 } from "react-native";
 import { useCart } from "../../context/CartContext";
-import { LoginContext } from "../../../App";
+import { useLogin } from "../../context/LoginContext";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
 
-export default Notification = ({ navigation }) => {
-  const [user, dispatch] = useContext(LoginContext);
+export default CompareProduct = ({ navigation }) => {
+  const [user, dispatch] = useLogin();
   const isLoggedIn = user !== null;
   const [totalPrice, setTotalPrice] = useState(0);
   //format price
