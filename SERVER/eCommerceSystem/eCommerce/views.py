@@ -25,7 +25,7 @@ from unidecode import unidecode
 from . import serializers, dao, perms
 from .models import PaymentForm, Follow
 from .models import Product, Category, Account, Image, UserRole, Order, Store, Attribute, PaymentType, ShippingType, \
-    OrderDetail, CommentProduct, ReviewStore, Bill
+    OrderDetail, CommentProduct, Bill
 from .serializers import RoleSerializer, ProductSerializer, CategorySerializer, AccountSerializer, ImageSerializer, \
     AttributeSerializer, OrderSerializer, OrderDetailSerializer, CommentProductSerializer, \
     ProductWithCommentsSerializer, FollowSerializer, StoreSerializer, ProductQuantityUpdateSerializer, \
@@ -465,38 +465,21 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         try:
             product_1 = Product.objects.get(id=id_product_1)
             category_id_1 = product_1.category.id
+            product_data_1 = ProductSerializer(product_1).data
+            self.quantitySold_avgRating_countCmt(product_data_1)  # Pass serialized data
         except Product.DoesNotExist:
             raise Http404("Không tìm thấy sản phẩm 1")
 
         try:
             product_2 = Product.objects.get(id=id_product_2)
             category_id_2 = product_2.category.id
+            product_data_2 = ProductSerializer(product_2).data
+            self.quantitySold_avgRating_countCmt(product_data_2)  # Pass serialized data
         except Product.DoesNotExist:
             raise Http404("Không tìm thấy sản phẩm 2")
 
         if category_id_1 == category_id_2:
-            pro_1 = []
-            pro_2 = []
-
-            attribute_data_1 = AttributeSerializer(product_1.attribute.all(), many=True).data
-            pro_1.append({
-                'name_product': product_1.name_product,
-                'price': product_1.price,
-                'description': product_1.description,
-                'product_attributes': attribute_data_1,
-                'store': product_1.store.name_store
-            })
-
-            attribute_data_2 = AttributeSerializer(product_2.attribute.all(), many=True).data
-            pro_2.append({
-                'name_product': product_2.name_product,
-                'price': product_2.price,
-                'description': product_2.description,
-                'product_attributes': attribute_data_2,
-                'store': product_2.store.name_store
-            })
-
-            return Response({'product_1': pro_1, 'product_2': pro_2}, status=status.HTTP_200_OK)
+            return Response({'product_1': product_data_1, 'product_2': product_data_2}, status=status.HTTP_200_OK)
         else:
             return Response('Sản phẩm không thuộc cùng một danh mục', status=status.HTTP_400_BAD_REQUEST)
 
@@ -1562,9 +1545,10 @@ class CommentView(viewsets.ViewSet, generics.ListAPIView):
         return Response("Bình luận đã được xóa thành công.", status=status.HTTP_204_NO_CONTENT)
 
 
-class ReviewStoreView(viewsets.ViewSet, generics.ListAPIView):
-    queryset = ReviewStore.objects.all()
-    serializer_class = serializers.ReviewStoreSerialzer
+#
+# class ReviewStoreView(viewsets.ViewSet, generics.ListAPIView):
+#     queryset = ReviewStore.objects.all()
+#     serializer_class = serializers.ReviewStoreSerialzer
 
 
 class FollowViewSet(viewsets.ViewSet, generics.ListAPIView):

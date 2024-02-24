@@ -52,6 +52,7 @@ import StoreRevenue from "./src/screens/Saller/StoreRevenue";
 import CartReducer from "./src/reducer/CartReducer";
 import { CartProvider } from "./src/context/CartContext";
 import { RefreshDataProvider } from "./src/context/RefreshDataContext";
+import { ProductProvider } from "./src/context/CompareProductContext";
 
 import { LoginProvider } from "./src/context/LoginContext";
 const Stack = createNativeStackNavigator();
@@ -62,72 +63,89 @@ const RootComponent = () => {
     <CartProvider initialState={cart} reducer={CartReducer}>
       <LoginProvider>
         <RefreshDataProvider>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              <Stack.Navigator
-                initialRouteName="HomeTabs"
-                screenOptions={{ headerShown: false }}
-              >
-                <Stack.Screen name="HomeTabs" component={MyTabs} />
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Register" component={Register} />
-                <Stack.Screen name="ProductDetail" component={ProductDetail} />
-                <Stack.Screen name="AddProducts" component={AddProducts} />
-                <Stack.Screen name="AddStore" component={AddStore} />
-                <Stack.Screen name="ProfileStore" component={ProfileStore} />
-                <Stack.Screen name="MenuStore" component={MenuStore} />
-                <Stack.Screen
-                  name="SearchProducts"
-                  component={SearchProducts}
-                />
-                <Stack.Screen name="ProductList" component={ProductList} />
-                <Stack.Screen
-                  name="ProductSoldOut"
-                  component={ProductSoldOut}
-                />
-                <Stack.Screen
-                  name="ProductPending"
-                  component={ProductPending}
-                />
-                <Stack.Screen name="TagProduct" component={TagProduct} />
-                <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
-                <Stack.Screen name="ProductStats" component={ProductStats} />
-                <Stack.Screen name="ChooseStats" component={ChooseStats} />
-                <Stack.Screen name="CategoryStats" component={CategoryStats} />
-                <Stack.Screen name="BillDetail" component={BillDetail} />
-                <Stack.Screen name="Pay" component={Pay} />
-                <Stack.Screen name="StoreRevenue" component={StoreRevenue} />
-                <Stack.Screen
-                  name="MyReviewProduct"
-                  component={MyReviewProduct}
-                />
-                <Stack.Screen name="OrderSold" component={OrderSold} />
-                <Stack.Screen name="BillList" component={BillList} />
-                <Stack.Screen name="ChooseBill" component={ChooseBill} />
-                <Stack.Screen name="BillConfirm" component={BillConfirm} />
-                <Stack.Screen name="FollowList" component={FollowList} />
-                <Stack.Screen name="ReviewProduct" component={ReviewProduct} />
-                <Stack.Screen
-                  name="ProductListComments"
-                  component={ProductListComments}
-                />
-                <Stack.Screen name="CommentDetail" component={CommentDetail} />
-                <Stack.Screen
-                  name="OrderPendingList"
-                  component={OrderPendingList}
-                />
-                <Stack.Screen
-                  name="CategoryListStats"
-                  component={CategoryListStats}
-                />
-                <Stack.Screen
-                  name="ProductListStats"
-                  component={ProductListStats}
-                />
-                <Stack.Screen name="EditProfile" component={EditProfile} />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </SafeAreaProvider>
+          <ProductProvider>
+            <SafeAreaProvider>
+              <NavigationContainer>
+                <Stack.Navigator
+                  initialRouteName="HomeTabs"
+                  screenOptions={{ headerShown: false }}
+                >
+                  <Stack.Screen name="HomeTabs" component={MyTabs} />
+                  <Stack.Screen name="Login" component={Login} />
+                  <Stack.Screen name="Register" component={Register} />
+                  <Stack.Screen
+                    name="ProductDetail"
+                    component={ProductDetail}
+                  />
+                  <Stack.Screen name="AddProducts" component={AddProducts} />
+                  <Stack.Screen name="AddStore" component={AddStore} />
+                  <Stack.Screen name="ProfileStore" component={ProfileStore} />
+                  <Stack.Screen name="MenuStore" component={MenuStore} />
+                  <Stack.Screen
+                    name="SearchProducts"
+                    component={SearchProducts}
+                  />
+                  <Stack.Screen name="ProductList" component={ProductList} />
+                  <Stack.Screen
+                    name="ProductSoldOut"
+                    component={ProductSoldOut}
+                  />
+                  <Stack.Screen
+                    name="ProductPending"
+                    component={ProductPending}
+                  />
+                  <Stack.Screen name="TagProduct" component={TagProduct} />
+                  <Stack.Screen
+                    name="UpdateProduct"
+                    component={UpdateProduct}
+                  />
+                  <Stack.Screen name="ProductStats" component={ProductStats} />
+                  <Stack.Screen name="ChooseStats" component={ChooseStats} />
+                  <Stack.Screen
+                    name="CategoryStats"
+                    component={CategoryStats}
+                  />
+                  <Stack.Screen name="BillDetail" component={BillDetail} />
+                  <Stack.Screen name="Pay" component={Pay} />
+                  <Stack.Screen name="StoreRevenue" component={StoreRevenue} />
+                  <Stack.Screen
+                    name="MyReviewProduct"
+                    component={MyReviewProduct}
+                  />
+                  <Stack.Screen name="OrderSold" component={OrderSold} />
+                  <Stack.Screen name="BillList" component={BillList} />
+                  <Stack.Screen name="ChooseBill" component={ChooseBill} />
+                  <Stack.Screen name="BillConfirm" component={BillConfirm} />
+                  <Stack.Screen name="FollowList" component={FollowList} />
+                  <Stack.Screen
+                    name="ReviewProduct"
+                    component={ReviewProduct}
+                  />
+                  <Stack.Screen
+                    name="ProductListComments"
+                    component={ProductListComments}
+                  />
+                  <Stack.Screen
+                    name="CommentDetail"
+                    component={CommentDetail}
+                  />
+                  <Stack.Screen
+                    name="OrderPendingList"
+                    component={OrderPendingList}
+                  />
+                  <Stack.Screen
+                    name="CategoryListStats"
+                    component={CategoryListStats}
+                  />
+                  <Stack.Screen
+                    name="ProductListStats"
+                    component={ProductListStats}
+                  />
+                  <Stack.Screen name="EditProfile" component={EditProfile} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </SafeAreaProvider>
+          </ProductProvider>
         </RefreshDataProvider>
       </LoginProvider>
     </CartProvider>

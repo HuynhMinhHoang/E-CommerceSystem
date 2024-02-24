@@ -439,7 +439,6 @@ const ContentComponent = ({
                 <Text style={styles.priceProduct}>
                   {formatPrice(product.product.price)}
                 </Text>
-                {/* <Text style={styles.priceProductSold}>Đã bán 123</Text> */}
                 <View style={styles.bgRating}>
                   <Rating
                     type="star"

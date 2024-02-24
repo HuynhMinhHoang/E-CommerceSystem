@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     // marginBottom: "26%",
     // height: "100%",
-    // borderWidth: 5
+    // borderWidth: 5,
     marginBottom: 5,
   },
   productContainer: {

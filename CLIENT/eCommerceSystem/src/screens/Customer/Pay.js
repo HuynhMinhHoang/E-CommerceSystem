@@ -32,7 +32,7 @@ export default Pay = ({ navigation }) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState(null);
   const [productByStore, setProductByStore] = useState({});
 
-  // console.log(totalPrice, cartItems);
+  console.log("cartItems========", cartItems);
 
   //format price
   const formatPrice = (price) => {

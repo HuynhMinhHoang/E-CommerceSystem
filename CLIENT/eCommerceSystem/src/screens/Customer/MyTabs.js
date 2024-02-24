@@ -12,6 +12,7 @@ import Cart from "./Cart";
 import Profile from "./Profile";
 import { View, Text, SafeAreaView, Image } from "react-native";
 import { useCart } from "../../context/CartContext";
+import { useProductContext } from "../../context/CompareProductContext";
 
 const Tab = createBottomTabNavigator();
 
@@ -68,6 +69,8 @@ const MyTabs = () => {
 
     const [{ cartItems }, dispatchCart] = useCart();
     const itemCount = cartItems.length;
+    const { state } = useProductContext();
+    const { productCount } = state;
     return (
       <View>
         <Image
@@ -96,6 +99,31 @@ const MyTabs = () => {
             }}
           >
             {itemCount}
+          </Text>
+        )}
+
+        {route.name === "CompareProduct" && (
+          <Text
+            style={{
+              position: "absolute",
+              top: -7,
+              right: -8,
+              color: "white",
+              paddingTop: 2,
+              paddingBottom: 1,
+              paddingLeft: 6,
+              paddingRight: 6,
+              borderRadius: 100,
+              backgroundColor: "#c20302",
+              fontSize: 12,
+              borderWidth: 1,
+              borderColor: "white",
+              textAlign: "center",
+              alignItems: "center",
+              fontWeight: "500",
+            }}
+          >
+            {productCount}
           </Text>
         )}
       </View>

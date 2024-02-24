@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
 import { useCart } from "../../context/CartContext";
 import { useLogin } from "../../context/LoginContext";
+import { useProductContext } from "../../context/CompareProductContext";
 
 const { width } = Dimensions.get("window");
 const windownWidth = Dimensions.get("window").width;
@@ -114,8 +115,7 @@ const HeaderComponent = ({ navigation }) => {
 };
 
 const ContentComponent = ({ productId, navigation }) => {
-  // const [raTing, setRaTing] = useState(4.5);
-  // const [sold, setSold] = useState(255);
+  const { dispatch } = useProductContext();
   const [isLiked, setIsLiked] = useState(false);
   const [ship, setShip] = useState(0);
   const [totalProduct, setTotalProduct] = useState(0);
@@ -162,6 +162,11 @@ const ContentComponent = ({ productId, navigation }) => {
 
     fetchData();
   }, []);
+
+  //compare product
+  const handleAddProduct = () => {
+    dispatch({ type: "ADD_PRODUCT", payload: products });
+  };
 
   //format price
   const formatPrice = (price) => {
@@ -260,10 +265,10 @@ const ContentComponent = ({ productId, navigation }) => {
                   />
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleAddProduct}>
                   <Image
                     style={styles.iconInbox}
-                    source={require("../../images/inbox.png")}
+                    source={require("../../images/add.png")}
                   />
                 </TouchableOpacity>
               </View>
@@ -640,6 +645,7 @@ const ContentComponent = ({ productId, navigation }) => {
 };
 
 const FooterComponent = ({ navigation, productId, user }) => {
+  const { dispatch } = useProductContext();
   const [{ cartItems }, dispatchCart] = useCart();
   //add to cart
   const [products, setProducts] = useState();
@@ -668,7 +674,7 @@ const FooterComponent = ({ navigation, productId, user }) => {
     getProductDetails(productId);
   }, [productId]);
 
-  // console.log("====>", products);
+  console.log("====>ADD_PRODUCT", products);
 
   const handleChat = () => {
     if (user) {
@@ -677,12 +683,9 @@ const FooterComponent = ({ navigation, productId, user }) => {
     }
   };
 
-  const handlePay = () => {
-    if (user) {
-      // navigation.navigate("Cart");
-    } else {
-      navigation.navigate("Login");
-    }
+  //compare product
+  const handleAddProduct = () => {
+    dispatch({ type: "ADD_PRODUCT", payload: [products] });
   };
 
   return (
@@ -697,16 +700,16 @@ const FooterComponent = ({ navigation, productId, user }) => {
 
       <View style={styles.brFooterPay}></View>
 
-      <TouchableOpacity style={styles.bgIconChat} onPress={handleAddToCart}>
+      <TouchableOpacity style={styles.bgIconChat} onPress={handleAddProduct}>
         <Image
-          source={require("../../images/addcart.png")}
-          style={styles.iconChat}
+          source={require("../../images/add4.png")}
+          style={{ marginTop: 5, width: 20, height: 20, marginBottom: 1 }}
         ></Image>
-        <Text style={styles.textIconChat}>Thêm giỏ hàng</Text>
+        <Text style={styles.textIconChat}>So sánh</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.bgPayProduct1} onPress={handlePay}>
-        <Text style={styles.textPayProduct}>Mua ngay</Text>
+      <TouchableOpacity style={styles.bgPayProduct1} onPress={handleAddToCart}>
+        <Text style={styles.textPayProduct}>Thêm giỏ hàng</Text>
       </TouchableOpacity>
     </View>
   );
