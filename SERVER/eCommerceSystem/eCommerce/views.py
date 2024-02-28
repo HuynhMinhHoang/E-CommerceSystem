@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.core import mail
 from django.db import models, transaction
-from django.db.models import Sum, Avg, Q
+from django.db.models import Sum, Avg, Q, Count
 from django.http import JsonResponse, Http404
 from django.shortcuts import redirect, get_list_or_404
 from django.shortcuts import render, get_object_or_404
@@ -572,6 +572,14 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         serializer = ProductSerializer(product)
         return Response({"product": serializer.data}, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['GET'])
+    def comfirm_pruduct(self, request, pk=None):
+        product = self.get_object()
+        product.status = True
+        product.save()
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class AttributeViewSet(viewsets.ViewSet, generics.ListAPIView, generics.DestroyAPIView):
     queryset = Attribute.objects.all()
@@ -632,8 +640,7 @@ class OrderViewSet(viewsets.ViewSet, generics.ListAPIView):
         paymentType_id = int(request.data.get('paymentType_id'))
         status_pay = 1 if paymentType_id == 1 else 0
         shippingType_id = int(request.data.get('shippingType_id'))
-        if request.user.is_authenticated and request.user.role_id == 2:
-
+        if request.user.is_authenticated:
             if not shipping_address or not shipping_fee or not note or not paymentType_id or not shippingType_id:
                 return Response({'error': 'Thông tin  không đủ'}, status=status.HTTP_400_BAD_REQUEST)
             try:
@@ -847,6 +854,14 @@ class BillViewSet(viewsets.ViewSet, generics.ListAPIView):
 class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Store.objects.all()
     serializer_class = serializers.StoreSerializer
+
+    @action(detail=False, methods=['get'])
+    def get_product_statusFalse(self, request):
+        stores = Store.objects.annotate(
+            product_false_count=Count('product', filter=models.Q(product__status=False))
+        ).filter(product_false_count__gt=0)
+        serializer = serializers.ProductFalse_ByStoreSerializer(stores, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['GET'])
     def list_products_tag(self, request, pk=None):
@@ -1201,6 +1216,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return Response({'error': 'Bạn không có quyền thêm sản phẩm.'}, status=status.HTTP_403_FORBIDDEN)
 
+    # stats manager
     @action(detail=False, methods=['Get'], url_path='get_order_count_in_month')
     def get_order_count_month(self, request, *args, **kwargs):
         month = request.query_params.get('month')
@@ -1208,7 +1224,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         data = []
         for count in order_counts:
             store_data = {
-                'name_store': count['name_store'],
+                'name_store': count['product__store__name_store'],
                 'order_count': count['order_counts']
             }
             data.append(store_data)
@@ -1221,7 +1237,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         data = []
         for count in order_counts:
             store_data = {
-                'name_store': count['name_store'],
+                'name_store': count['product__store__name_store'],
                 'order_count': count['order_counts']
             }
             data.append(store_data)
@@ -1234,12 +1250,13 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         data = []
         for count in order_counts:
             store_data = {
-                'name_store': count['name_store'],
+                'name_store': count['product__store__name_store'],
                 'order_count': count['order_counts']
             }
             data.append(store_data)
         return Response(data, status=status.HTTP_200_OK)
 
+    # stats store
     @action(methods=['GET'], detail=True)
     def product_revenue_in_month(self, request, pk):
         data = []
@@ -1399,6 +1416,37 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
             return Response('Xác nhận cửa hàng thành công', status=status.HTTP_200_OK)
         else:
             return Response('Cửa hàng đã được xác nhận', status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['GET'], detail=False)
+    def get_list_store_stats(self, request):
+        store = Store.objects.filter(active=1)
+        store_show = StoreSerializer(store, many=True)
+        return Response(store_show.data, status=status.HTTP_200_OK)
+
+    # stats manager
+    @action(detail=True, methods=['GET'])
+    def product_count_in_month(self, request, pk):
+        store = self.get_object()
+
+        year = request.query_params.get('year', None)
+
+        year = int(year)
+
+        response_data = dao.product_count_statistics_in_month(store, year)
+
+        return Response(response_data)
+
+    @action(detail=True, methods=['GET'])
+    def product_count_in_quarter(self, request, pk):
+        store = self.get_object()
+
+        year = request.query_params.get('year', None)
+
+        year = int(year)
+
+        response_data = dao.product_count_statistics_in_quarter(store, year)
+
+        return Response(response_data)
 
 
 class ShippingView(viewsets.ViewSet, generics.ListAPIView,

@@ -84,6 +84,22 @@ class StoreSerializer(ModelSerializer):
         return representation
 
 
+
+class ProductFalse_ByStoreSerializer(serializers.ModelSerializer):
+    product_false_count = serializers.IntegerField()
+
+    class Meta:
+        model = Store
+        fields = ['id', 'name_store', 'address', 'active', 'account', 'avt', 'product_false_count']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if representation.get('avt'):
+            representation['avt'] = "https://res.cloudinary.com/diyeuzxqt/" + representation['avt']
+
+        return representation
+
 class CategoryListSerializer(ModelSerializer):
     class Meta:
         model = Category

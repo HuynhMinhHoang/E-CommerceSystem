@@ -216,7 +216,9 @@ const ContentComponent = ({ navigation, selectedProducts, productCount }) => {
           )}
         </View>
       ) : (
-        <Text style={{ padding: 10 }}>Vui lòng thêm sản phẩm để so sánh!</Text>
+        <Text style={{ padding: 10 }}>
+          Vui lòng thêm 2 sản phẩm để so sánh!
+        </Text>
       )}
       {hasProductsToCompare && (
         <View style={{ alignItems: "center", textAlign: "center" }}>

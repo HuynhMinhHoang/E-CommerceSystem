@@ -124,7 +124,9 @@ const ContentComponent = ({ navigation }) => {
       // console.log(accessToken);
       await AsyncStorage.setItem("accessToken", accessToken);
 
-      navigation.navigate("HomeTabs");
+      if (userInfoResponse.data.role == 2 || userInfoResponse.data.role == 3) {
+        navigation.navigate("HomeTabs");
+      } else navigation.navigate("MenuManager");
     } catch (error) {
       console.error("Đăng nhập thất bại:", error);
       console.log("Error details:", error.response.data);

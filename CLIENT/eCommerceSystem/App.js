@@ -53,8 +53,17 @@ import CartReducer from "./src/reducer/CartReducer";
 import { CartProvider } from "./src/context/CartContext";
 import { RefreshDataProvider } from "./src/context/RefreshDataContext";
 import { ProductProvider } from "./src/context/CompareProductContext";
-
 import { LoginProvider } from "./src/context/LoginContext";
+
+import MenuManager from "./src/screens/Manager/MenuManager";
+import StoreStats from "./src/screens/Manager/StoreStats";
+import ConfirmStore from "./src/screens/Manager/ConfirmStore";
+import ConfirmProduct from "./src/screens/Manager/ConfirmProduct";
+import ListConfirmProduct from "./src/screens/Manager/ListConfirmProduct";
+import StoreListStats from "./src/screens/Manager/StoreListStats";
+import StatsFrequencySale from "./src/screens/Manager/StatsFrequencySale";
+import StatsTotalProduct from "./src/screens/Manager/StatsTotalProduct";
+
 const Stack = createNativeStackNavigator();
 
 const RootComponent = () => {
@@ -67,7 +76,7 @@ const RootComponent = () => {
             <SafeAreaProvider>
               <NavigationContainer>
                 <Stack.Navigator
-                  initialRouteName="HomeTabs"
+                  initialRouteName="MenuManager"
                   screenOptions={{ headerShown: false }}
                 >
                   <Stack.Screen name="HomeTabs" component={MyTabs} />
@@ -107,12 +116,37 @@ const RootComponent = () => {
                   />
                   <Stack.Screen name="BillDetail" component={BillDetail} />
                   <Stack.Screen name="Pay" component={Pay} />
+                  <Stack.Screen
+                    name="StoreListStats"
+                    component={StoreListStats}
+                  />
                   <Stack.Screen name="StoreRevenue" component={StoreRevenue} />
+                  <Stack.Screen name="MenuManager" component={MenuManager} />
+                  <Stack.Screen name="StoreStats" component={StoreStats} />
+                  <Stack.Screen name="ConfirmStore" component={ConfirmStore} />
+                  <Stack.Screen
+                    name="ListConfirmProduct"
+                    component={ListConfirmProduct}
+                  />
+
+                  <Stack.Screen
+                    name="ConfirmProduct"
+                    component={ConfirmProduct}
+                  />
+
                   <Stack.Screen
                     name="MyReviewProduct"
                     component={MyReviewProduct}
                   />
                   <Stack.Screen name="OrderSold" component={OrderSold} />
+                  <Stack.Screen
+                    name="StatsFrequencySale"
+                    component={StatsFrequencySale}
+                  />
+                  <Stack.Screen
+                    name="StatsTotalProduct"
+                    component={StatsTotalProduct}
+                  />
                   <Stack.Screen name="BillList" component={BillList} />
                   <Stack.Screen name="ChooseBill" component={ChooseBill} />
                   <Stack.Screen name="BillConfirm" component={BillConfirm} />

@@ -3,6 +3,7 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { Image, ScrollView, FlatList } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
+import { useLogin } from "../../context/LoginContext";
 
 import {
   Dimensions,
@@ -32,9 +33,9 @@ const imageBanner = [
   require("../../images/banner9.png"),
 ];
 
-export default MenuStore = ({ navigation }) => {
+export default MenuManager = ({ navigation }) => {
   const route = useRoute();
-  const { storeData } = route.params;
+
   return (
     <View style={styles.viewContainer}>
       <View style={styles.viewHeader}>
@@ -42,15 +43,11 @@ export default MenuStore = ({ navigation }) => {
       </View>
 
       <View style={styles.viewContent}>
-        <ContentComponent
-          navigation={navigation}
-          route={route}
-          storeData={storeData}
-        />
+        <ContentComponent navigation={navigation} route={route} />
       </View>
 
       <View style={styles.viewFooter}>
-        <FooterComponent navigation={navigation} storeData={storeData} />
+        <FooterComponent navigation={navigation} />
       </View>
     </View>
   );
@@ -61,14 +58,8 @@ const HeaderComponent = () => {
     <View style={{ flex: 1 }}>
       <View style={styles.containerHeader}>
         <View style={styles.signIn}>
-          <TouchableOpacity style={styles.bgIconMess}>
-            <Image
-              source={require("../../images/111.png")}
-              style={styles.iconBack}
-            ></Image>
-          </TouchableOpacity>
           <TouchableOpacity>
-            <Text style={styles.textSignIn}>Shop của tôi</Text>
+            <Text style={styles.textSignIn}>Manager e-Commerce System</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -77,9 +68,21 @@ const HeaderComponent = () => {
   );
 };
 
-const ContentComponent = ({ navigation, storeData, route }) => {
+const ContentComponent = ({ navigation, route }) => {
   // const route = useRoute();
-  const { state: refreshState } = useRefreshData();
+  // const [user, dispatch] = useLogin();
+  const user = {
+    address: "python",
+    avt: "https://res.cloudinary.com/diyeuzxqt/image/upload/v1705139014/sptj8owhhcsu85tmdpcd.jpg",
+    date_of_birth: "2001-02-12",
+    email: "manager@gmail.com",
+    full_name: "Manager",
+    gender: true,
+    id: 69,
+    phone: "0123456789",
+    role: 1,
+    username: "manager",
+  };
 
   //banner
   const [imgActive, setImgActive] = useState(0);
@@ -108,66 +111,34 @@ const ContentComponent = ({ navigation, storeData, route }) => {
   const scrollViewRef = useRef();
   // console.log(storeData);
 
-  //count order & comment
-  useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const response = await axios.get(
-          endpoints.count_orders_and_comments(storeData[0].id)
-        );
-
-        setCounts(response.data);
-      } catch (error) {
-        console.error("Error fetching counts:", error);
-      }
-    };
-
-    fetchCounts();
-  }, [refreshState]);
-
   return (
     <ScrollView style={{ height: "100%" }}>
       <View style={styles.bgStore}>
-        {/* store info */}
-        {storeData &&
-          storeData.map((store, index) => (
-            <View
-              key={index}
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View>
-                <Image
-                  style={styles.avtShop}
-                  source={
-                    store.avt
-                      ? { uri: store.avt }
-                      : require("../../images/chualogin.png")
-                  }
-                />
-              </View>
+        {/* manager info */}
 
-              <View>
-                <Text style={styles.textStore}>{store.name_store}</Text>
-                <View style={styles.bgLocationSt}>
-                  <Image
-                    style={styles.locationShop}
-                    source={require("../../images/location.png")}
-                  />
-                  <Text
-                    style={styles.textLocation}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {store.address}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          ))}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View>
+            <Image
+              style={styles.avtShop}
+              source={
+                user.avt
+                  ? { uri: user.avt }
+                  : require("../../images/chualogin.png")
+              }
+            />
+          </View>
+
+          <View>
+            <Text style={styles.textStore}>{user.full_name}</Text>
+          </View>
+        </View>
+
         {/* <TouchableOpacity style={styles.viewShop}>
           <Text style={styles.textViewShop}>Xem Shop</Text>
         </TouchableOpacity> */}
@@ -206,83 +177,6 @@ const ContentComponent = ({ navigation, storeData, route }) => {
 
       {/* <View style={styles.brContent}></View> */}
 
-      <View style={styles.bgAddName}>
-        <View style={styles.btnAddName}>
-          <Text style={styles.textAddName}>Đơn hàng</Text>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              position: "absolute",
-              right: -9,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              navigation.navigate("OrderSold", {
-                storeId: storeData[0].id,
-                storeData: storeData,
-              });
-            }}
-          >
-            <Text style={styles.textAddName1}>Xem lịch sử đơn hàng</Text>
-            <Image
-              source={require("../../images/settingnext.png")}
-              style={styles.iconNext}
-            ></Image>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.bgItem}>
-          <TouchableOpacity
-            style={styles.btnItem}
-            onPress={() => {
-              navigation.navigate("OrderPendingList", {
-                storeId: storeData[0].id,
-                storeData: storeData,
-              });
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: "500" }}>
-              {counts.count_orders}
-            </Text>
-            <Text style={{ fontSize: 12, color: "#5c5c5c", marginTop: 3 }}>
-              Chờ xác nhận
-            </Text>
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity style={styles.btnItem}>
-            <Text style={{ fontSize: 18, fontWeight: "500" }}>0</Text>
-            <Text style={{ fontSize: 12, color: "#5c5c5c", marginTop: 3 }}>
-              Đơn hủy
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.btnItem}>
-            <Text style={{ fontSize: 18, fontWeight: "500" }}>0</Text>
-            <Text style={{ fontSize: 12, color: "#5c5c5c", marginTop: 3 }}>
-              Trả hàng
-            </Text>
-          </TouchableOpacity> */}
-
-          <TouchableOpacity
-            style={styles.btnItem}
-            onPress={() => {
-              navigation.navigate("ProductListComments", {
-                storeId: storeData[0].id,
-                storeData: storeData,
-              });
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: "500" }}>
-              {counts.count_comments}
-            </Text>
-            <Text style={{ fontSize: 12, color: "#5c5c5c", marginTop: 3 }}>
-              Đánh giá
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
       <View style={styles.brContent}></View>
 
       <View style={styles.bgAddName}>
@@ -290,21 +184,18 @@ const ContentComponent = ({ navigation, storeData, route }) => {
           <TouchableOpacity
             style={styles.btnItem1}
             onPress={() => {
-              navigation.navigate("StoreRevenue", {
-                storeId: storeData[0].id,
-                storeData: storeData,
-              });
+              navigation.navigate("ConfirmStore");
             }}
           >
             <View
               style={{
-                backgroundColor: "#EBA41E",
+                backgroundColor: "#3DA69E",
                 padding: 5,
                 borderRadius: 8,
               }}
             >
               <Image
-                source={require("../../images/card.png")}
+                source={require("../../images/pending.png")}
                 style={styles.iconItem}
               ></Image>
             </View>
@@ -317,16 +208,45 @@ const ContentComponent = ({ navigation, storeData, route }) => {
                 fontWeight: "500",
               }}
             >
-              Tài chính
+              Duyệt cửa hàng
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.btnItem1}
             onPress={() => {
-              navigation.navigate("ChooseStats", {
-                storeId: storeData[0].id,
-              });
+              navigation.navigate("ListConfirmProduct");
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "#dd3232",
+                padding: 5,
+                borderRadius: 8,
+              }}
+            >
+              <Image
+                source={require("../../images/product.png")}
+                style={styles.iconItem}
+              ></Image>
+            </View>
+
+            <Text
+              style={{
+                fontSize: 13,
+                color: "#222222",
+                marginTop: 10,
+                fontWeight: "500",
+              }}
+            >
+              Duyệt sản phẩm
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btnItem1}
+            onPress={() => {
+              navigation.navigate("StoreListStats");
             }}
           >
             <View
@@ -351,142 +271,6 @@ const ContentComponent = ({ navigation, storeData, route }) => {
               }}
             >
               Thống kê
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.btnItem1}
-            onPress={() => {
-              navigation.navigate("TagProduct", {
-                storeId: storeData[0].id,
-              });
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#ff0095",
-                padding: 5,
-                borderRadius: 8,
-              }}
-            >
-              <Image
-                source={require("../../images/ad.png")}
-                style={styles.iconItem}
-              ></Image>
-            </View>
-
-            <Text
-              style={{
-                fontSize: 13,
-                color: "#222222",
-                marginTop: 10,
-                fontWeight: "500",
-              }}
-            >
-              Quảng cáo
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.bgAddName}>
-        <View style={styles.bgItem11}>
-          <TouchableOpacity
-            style={styles.btnItem1}
-            onPress={() => {
-              navigation.navigate("ProductList", {
-                storeData: storeData,
-              });
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#7b00e0",
-                padding: 5,
-                borderRadius: 8,
-              }}
-            >
-              <Image
-                source={require("../../images/product.png")}
-                style={styles.iconItem}
-              ></Image>
-            </View>
-
-            <Text
-              style={{
-                fontSize: 13,
-                color: "#222222",
-                marginTop: 10,
-                fontWeight: "500",
-              }}
-            >
-              Sản phẩm
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.btnItem1}
-            onPress={() => {
-              navigation.navigate("ProductPending", {
-                storeId: storeData,
-              });
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#3DA69E",
-                padding: 5,
-                borderRadius: 8,
-              }}
-            >
-              <Image
-                source={require("../../images/pending.png")}
-                style={styles.iconItem}
-              ></Image>
-            </View>
-
-            <Text
-              style={{
-                fontSize: 13,
-                color: "#222222",
-                marginTop: 10,
-                fontWeight: "500",
-              }}
-            >
-              Chờ duyệt
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.btnItem1}
-            onPress={() => {
-              navigation.navigate("ProductSoldOut", {
-                storeId: storeData,
-              });
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#F14D2F",
-                padding: 5,
-                borderRadius: 8,
-              }}
-            >
-              <Image
-                source={require("../../images/soldout.png")}
-                style={styles.iconItem}
-              ></Image>
-            </View>
-
-            <Text
-              style={{
-                fontSize: 13,
-                color: "#222222",
-                marginTop: 10,
-                fontWeight: "500",
-              }}
-            >
-              Hết hàng
             </Text>
           </TouchableOpacity>
         </View>
