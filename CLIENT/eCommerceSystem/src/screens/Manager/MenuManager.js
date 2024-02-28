@@ -177,7 +177,7 @@ const ContentComponent = ({ navigation, route }) => {
 
       {/* <View style={styles.brContent}></View> */}
 
-      <View style={styles.brContent}></View>
+      {/* <View style={styles.brContent}></View> */}
 
       <View style={styles.bgAddName}>
         <View style={styles.bgItem1}>
@@ -328,8 +328,8 @@ const styles = StyleSheet.create({
   },
   textSignIn: {
     fontSize: 19,
-    color: "black",
-    fontWeight: "400",
+    color: "#db3918",
+    fontWeight: "500",
   },
   brButton: {
     height: 3,
@@ -470,6 +470,7 @@ const styles = StyleSheet.create({
   bgAddName: {
     width: windownWidth - 30,
     marginLeft: 15,
+    // marginTop:20,
   },
   btnAddName: {
     flexDirection: "row",

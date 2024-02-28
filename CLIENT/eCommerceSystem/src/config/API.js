@@ -75,12 +75,12 @@ export const endpoints = {
   get_orders_status_order_status_pay_true: (id) =>
     `/stores/${id}/get_orders_status_order_status_pay_true/`,
   compare_product: "/products/compare_product/",
-  get_order_count_in_month: "/stores/get_order_count_in_month/",
-  get_order_count_in_year: "/stores/get_order_count_in_year/",
-  get_order_count_in_quarter: "/stores/get_order_count_in_quarter/",
   get_product_statusFalse: "/stores/get_product_statusFalse",
-  comfirm_pruduct: (id) => `/products/${id}/comfirm_pruduct/`,
   get_list_store_stats: "/stores/get_list_store_stats",
+
+  get_order_count_month: (id) => `/stores/${id}/get_order_count_month/`,
+  get_order_count_quarter: (id) => `/stores/${id}/get_order_count_quarter/`,
+  comfirm_pruduct: (id) => `/products/${id}/comfirm_pruduct/`,
   product_count_in_month: (id) => `/stores/${id}/product_count_in_month/`,
   product_count_in_quarter: (id) => `/stores/${id}/product_count_in_quarter/`,
 };

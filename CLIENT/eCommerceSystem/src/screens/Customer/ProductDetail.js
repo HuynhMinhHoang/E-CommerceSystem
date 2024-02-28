@@ -60,12 +60,12 @@ const HeaderComponent = ({ navigation }) => {
   return (
     <View style={styles.containerHeader}>
       <View style={styles.signIn}>
-        <TouchableOpacity style={styles.backgroundSignIn}>
+        {/* <TouchableOpacity style={styles.backgroundSignIn}>
           <Image
             source={require("../../images/111.png")}
             style={styles.iconSearch}
           ></Image>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity
           style={styles.backgroundCart}

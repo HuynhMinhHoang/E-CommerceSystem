@@ -1216,47 +1216,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return Response({'error': 'Bạn không có quyền thêm sản phẩm.'}, status=status.HTTP_403_FORBIDDEN)
 
-    # stats manager
-    @action(detail=False, methods=['Get'], url_path='get_order_count_in_month')
-    def get_order_count_month(self, request, *args, **kwargs):
-        month = request.query_params.get('month')
-        order_counts = dao.get_order_count_in_month(month)
-        data = []
-        for count in order_counts:
-            store_data = {
-                'name_store': count['product__store__name_store'],
-                'order_count': count['order_counts']
-            }
-            data.append(store_data)
-        return Response(data, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['Get'], url_path='get_order_count_in_year')
-    def get_order_count_year(self, request):
-        year = request.query_params.get('year')
-        order_counts = dao.get_order_count_in_year(year)
-        data = []
-        for count in order_counts:
-            store_data = {
-                'name_store': count['product__store__name_store'],
-                'order_count': count['order_counts']
-            }
-            data.append(store_data)
-        return Response(data, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['Get'], url_path='get_order_count_in_quarter')
-    def get_order_count_quarter(self, request):
-        quarter = request.query_params.get('quarter')
-        order_counts = dao.get_order_count_in_quarter(quarter)
-        data = []
-        for count in order_counts:
-            store_data = {
-                'name_store': count['product__store__name_store'],
-                'order_count': count['order_counts']
-            }
-            data.append(store_data)
-        return Response(data, status=status.HTTP_200_OK)
-
-    # stats store
+    # stats product store
     @action(methods=['GET'], detail=True)
     def product_revenue_in_month(self, request, pk):
         data = []
@@ -1314,7 +1274,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # category
+    # stats category store
     @action(methods=['GET'], detail=True)
     def category_revenue_in_month(self, request, pk):
         data = []
@@ -1423,7 +1383,7 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         store_show = StoreSerializer(store, many=True)
         return Response(store_show.data, status=status.HTTP_200_OK)
 
-    # stats manager
+    # stats total product manager
     @action(detail=True, methods=['GET'])
     def product_count_in_month(self, request, pk):
         store = self.get_object()
@@ -1447,6 +1407,37 @@ class StoreViewSet(viewsets.ViewSet, generics.ListAPIView):
         response_data = dao.product_count_statistics_in_quarter(store, year)
 
         return Response(response_data)
+
+    # stats count order
+    @action(detail=True, methods=['GET'])
+    def get_order_count_month(self, request, pk):
+        store_id = self.get_object()
+        year = request.query_params.get('year')
+        order_counts = dao.order_count_statistics_in_month(store_id, year)
+        data = []
+        for count in order_counts['monthly_stats']:
+            store_data = {
+                'month': count['month'],
+                'total_orders': count['total_orders'],
+                'order_info': count['order_info'],
+            }
+            data.append(store_data)
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['GET'])
+    def get_order_count_quarter(self, request, pk):
+        store_id = self.get_object()
+        year = request.query_params.get('year')
+        order_counts = dao.order_count_statistics_in_quarter(store_id, year)
+        data = []
+        for count in order_counts['quarterly_stats']:
+            store_data = {
+                'quarter': count['quarter'],
+                'total_orders': count['total_orders'],
+                'order_info': count['order_info'],
+            }
+            data.append(store_data)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class ShippingView(viewsets.ViewSet, generics.ListAPIView,

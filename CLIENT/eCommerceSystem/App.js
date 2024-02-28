@@ -76,7 +76,7 @@ const RootComponent = () => {
             <SafeAreaProvider>
               <NavigationContainer>
                 <Stack.Navigator
-                  initialRouteName="MenuManager"
+                  initialRouteName="HomeTabs"
                   screenOptions={{ headerShown: false }}
                 >
                   <Stack.Screen name="HomeTabs" component={MyTabs} />

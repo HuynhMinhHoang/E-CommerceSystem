@@ -51,12 +51,12 @@ const HeaderComponent = () => {
       {/* Component Header */}
       <View style={styles.containerHeader}>
         <View style={styles.signIn}>
-          <TouchableOpacity style={styles.bgIconMess}>
+          {/* <TouchableOpacity style={styles.bgIconMess}>
             <Image
               source={require("../../images/111.png")}
               style={styles.iconBack}
             ></Image>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View>
             <Text style={styles.textSignIn}>Đơn chờ xác nhận</Text>
