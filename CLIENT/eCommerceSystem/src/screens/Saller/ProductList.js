@@ -15,6 +15,7 @@ import {
 import DropDown from "react-native-dropdown-picker";
 import { useLogin } from "../../context/LoginContext";
 import { useRoute } from "@react-navigation/native";
+import { useRefreshData } from "../../context/RefreshDataContext";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
@@ -83,15 +84,12 @@ const ContentComponent = ({
   route,
   storeData,
 }) => {
+  const { state: refreshState } = useRefreshData();
+
   //call api product
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const responseProducts = await axios.get(endpoints.products);
-        // const filteredProducts = responseProducts.data.filter((product) => {
-        //   return product.store_info && product.store_info.account === user.id;
-        // });
-
         const filteredProducts = await axios.get(
           endpoints.get_products_by_store_true(storeData[0].id)
         );
@@ -114,7 +112,7 @@ const ContentComponent = ({
     };
 
     fetchData();
-  }, [route.params?.refreshData]);
+  }, [refreshState]);
 
   //format price
   const formatPrice = (price) => {

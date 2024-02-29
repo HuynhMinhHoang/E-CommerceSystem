@@ -93,9 +93,7 @@ const ContentComponent = ({ navigation }) => {
     { label: "Nữ", value: false },
   ]);
 
-  const [selectedGender, setSelectedGender] = useState(
-    user.gender ? "Nam" : "Nữ"
-  );
+  const [selectedGender, setSelectedGender] = useState(user.gender);
 
   //select dateOfbirth
   const onChange = (event, selectedDate) => {
@@ -146,10 +144,6 @@ const ContentComponent = ({ navigation }) => {
   //handle update profile
   const handleUpdateProfile = async () => {
     try {
-      if (!selectedGender || !gender) {
-        Alert.alert("Thông báo:", "Vui lòng nhập đầy đủ thông tin!");
-      } else {
-      }
       const filename = avatar.split("/").pop();
       const match = /\.(\w+)$/.exec(filename);
       const type = match ? `avatar/${match[1]}` : `avatar`;

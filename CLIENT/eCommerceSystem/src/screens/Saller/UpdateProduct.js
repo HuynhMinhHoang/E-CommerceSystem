@@ -9,7 +9,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
+
 import DropDown from "react-native-dropdown-picker";
 import axios, { endpoints } from "../../config/API";
 import { useRoute } from "@react-navigation/native";
@@ -67,7 +69,7 @@ const HeaderComponent = () => {
 
 const ContentComponent = ({ product, storeData, navigation }) => {
   const { dispatch } = useRefreshData();
-
+  // console.log(product);
   const [categories, setCategories] = useState([]);
   const [additionalFields, setAdditionalFields] = useState(
     (product.product_attributes || [{}]).map(({ id, ...rest }) => ({
@@ -81,7 +83,9 @@ const ContentComponent = ({ product, storeData, navigation }) => {
       ...rest,
     }))
   );
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(
+    product.category_info.id
+  );
   const [isOpenCategory, setIsOpenCategory] = useState(false);
   const [productName, setProductName] = useState(product.name_product);
   const [productDescription, setProductDescription] = useState(
@@ -179,11 +183,17 @@ const ContentComponent = ({ product, storeData, navigation }) => {
 
   const handleRemoveImage = (index, imageId) => {
     if (imageId) {
-      handleDeleteImages(imageId);
+      showAlert(`Bạn có chắc chắn muốn xóa ảnh không?`, async () => {
+        await handleDeleteImages(imageId);
+        const updatedImages = [...additionalImages];
+        updatedImages.splice(index, 1);
+        setAdditionalImages(updatedImages);
+      });
+    } else {
+      const updatedImages = [...additionalImages];
+      updatedImages.splice(index, 1);
+      setAdditionalImages(updatedImages);
     }
-    const updatedImages = [...additionalImages];
-    updatedImages.splice(index, 1);
-    setAdditionalImages(updatedImages);
   };
 
   //attribute product
@@ -193,12 +203,30 @@ const ContentComponent = ({ product, storeData, navigation }) => {
 
   const handleRemoveField = (index, attributeId) => {
     if (attributeId) {
-      handleDeleteAttribute(attributeId);
+      showAlert(`Bạn có chắc chắn muốn xóa thuộc tính không?`, async () => {
+        await handleDeleteAttribute(attributeId);
+        const updatedFields = [...additionalFields];
+        updatedFields.splice(index, 1);
+        setAdditionalFields(updatedFields);
+      });
+    } else {
+      const updatedFields = [...additionalFields];
+      updatedFields.splice(index, 1);
+      setAdditionalFields(updatedFields);
     }
+  };
 
-    const updatedFields = [...additionalFields];
-    updatedFields.splice(index, 1);
-    setAdditionalFields(updatedFields);
+  //show alert delete
+  const showAlert = (message, onConfirm) => {
+    Alert.alert(
+      "Xác nhận",
+      message,
+      [
+        { text: "Hủy", style: "cancel" },
+        { text: "Xác nhận", onPress: onConfirm },
+      ],
+      { cancelable: false }
+    );
   };
 
   //update product
@@ -257,6 +285,7 @@ const ContentComponent = ({ product, storeData, navigation }) => {
       console.error(`Lỗi khi xóa thuộc tính ${attributeId}:`, error);
     }
   };
+
   //delete images
   const handleDeleteImages = async (imageID) => {
     try {
@@ -455,7 +484,14 @@ const ContentComponent = ({ product, storeData, navigation }) => {
             <View style={styles.brContent}></View>
 
             <View style={styles.bgAddName1}>
-              <View style={{ width: "100%", marginLeft: 10 }}>
+              <View
+                style={{
+                  width: "100%",
+                  marginLeft: 10,
+                  marginBottom: 10,
+                  marginTop: 10,
+                }}
+              >
                 <Text style={styles.textAddName}>
                   Thông tin sản phẩm <Text style={{ color: "#ee4d2d" }}>*</Text>
                 </Text>
