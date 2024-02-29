@@ -6,6 +6,7 @@ import { useRoute } from "@react-navigation/native";
 import * as Animatable from "react-native-animatable";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment-timezone";
+import { useRefreshData } from "../../context/RefreshDataContext";
 
 import {
   Dimensions,
@@ -20,7 +21,6 @@ import {
 } from "react-native";
 import DropDown from "react-native-dropdown-picker";
 import axios, { endpoints } from "../../config/API";
-
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
@@ -65,6 +65,8 @@ const HeaderComponent = () => {
 };
 
 const ContentComponent = ({ navigation }) => {
+  const { dispatch } = useRefreshData();
+
   const route = useRoute();
   const { storeId, totalRevenue } = route.params;
   // const storeId = 20;
@@ -130,6 +132,7 @@ const ContentComponent = ({ navigation }) => {
           },
         }
       );
+      dispatch({ type: "REFRESH_DATA" });
 
       console.log("Tag add:", response.data);
       fetchData();
@@ -155,6 +158,8 @@ const ContentComponent = ({ navigation }) => {
           onPress: async () => {
             try {
               const response = await axios.post(endpoints.remove_tag(product));
+              dispatch({ type: "REFRESH_DATA" });
+
               console.log("product vua xoa tag", product);
               console.log("Tag remove:", response.data);
               fetchData();

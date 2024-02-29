@@ -70,7 +70,7 @@ const HeaderComponent = () => {
 };
 
 const ContentComponent = ({ navigation, formatPrice }) => {
-  const { state: refreshState } = useRefreshData();
+  const { state: refreshState, dispatch } = useRefreshData();
 
   const route = useRoute();
   const { user, totalShip } = route.params;
@@ -483,7 +483,9 @@ const ContentComponent = ({ navigation, formatPrice }) => {
   const handleCloseModal = () => {
     setVNPAYModalVisible(false);
     setPayPalModalVisible(false);
-    navigation.navigate("BillList", { user: user, refreshData: true });
+    dispatch({ type: "REFRESH_DATA" });
+
+    navigation.navigate("BillList", { user: user });
   };
 
   const vnpayData = {

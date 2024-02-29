@@ -766,7 +766,7 @@ const FooterComponent = ({
         },
       });
 
-      console.log("OrderDetails đã được tạo thành công cho cửa hàng", orderId);
+      console.log("OrderDetails đã được tạo thành công cho đơn hàng", orderId);
     } catch (error) {
       console.error("Lỗi khi tạo OrderDetails:", error);
     }

@@ -514,7 +514,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         product_ids_str = request.POST.get('product_ids', '[]')
         product_ids = json.loads(product_ids_str)
 
-        products = get_list_or_404(Product, id__in=product_ids)
+        products = get_list_or_404(Product, id__in=product_ids, status=True)
 
         sorted_products = sorted(products, key=lambda x: unidecode(x.name_product).casefold())
 
@@ -530,7 +530,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         product_ids_str = request.POST.get('product_ids', '[]')
         product_ids = json.loads(product_ids_str)
 
-        products = get_list_or_404(Product, id__in=product_ids)
+        products = get_list_or_404(Product, id__in=product_ids, status=True)
 
         sorted_products = sorted(products, key=lambda x: x.price)
         serialized_data = [{"product": ProductSerializer(product).data} for product in sorted_products]
@@ -545,7 +545,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         product_ids_str = request.POST.get('product_ids', '[]')
         product_ids = json.loads(product_ids_str)
 
-        products = get_list_or_404(Product, id__in=product_ids)
+        products = get_list_or_404(Product, id__in=product_ids, status=True)
 
         sorted_products = sorted(products, key=lambda x: x.price, reverse=True)
         serialized_data = [{"product": ProductSerializer(product).data} for product in sorted_products]
@@ -561,7 +561,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
             product_ids_str = request.data.get('product_ids', '[]')
             product_ids = json.loads(product_ids_str)
 
-            products = Product.objects.filter(id__in=product_ids)
+            products = Product.objects.filter(id__in=product_ids, status=True)
 
             products_info = []
 
