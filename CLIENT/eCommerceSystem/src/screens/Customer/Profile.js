@@ -207,7 +207,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
     fetchDataStore();
   }, [route.params?.refreshData, user]);
 
-  console.log("========", storeData);
+  // console.log("========", storeData);
 
   //logout
   const logout = () => {

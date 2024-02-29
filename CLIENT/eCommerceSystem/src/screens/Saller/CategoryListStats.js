@@ -92,7 +92,7 @@ const ContentComponent = ({
           }
           return count;
         });
-        console.log("========", response.data);
+        // console.log("========", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

@@ -88,7 +88,7 @@ const ContentComponent = ({ navigation, products }) => {
 
         const numberOfProducts = response.data.length;
 
-        console.log("========", response.data);
+        // console.log("========", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

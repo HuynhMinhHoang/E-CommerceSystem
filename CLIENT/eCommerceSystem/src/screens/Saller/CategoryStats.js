@@ -182,7 +182,7 @@ const ContentComponent = ({ navigation }) => {
             }
           );
           setCategoryStatsMonth(response.data);
-          console.log("========month", response.data);
+          // console.log("========month", response.data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
