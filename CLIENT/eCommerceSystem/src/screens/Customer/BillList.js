@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useContext, useState, useEffect } from "react";
 import { Image, ScrollView, Alert, FlatList, Modal } from "react-native";
 import WebView from "react-native-webview";
+import { useRefreshData } from "../../context/RefreshDataContext";
 
 import {
   Dimensions,
@@ -69,6 +70,8 @@ const HeaderComponent = () => {
 };
 
 const ContentComponent = ({ navigation, formatPrice }) => {
+  const { state: refreshState } = useRefreshData();
+
   const route = useRoute();
   const { user, totalShip } = route.params;
   const [orders, setOrders] = useState([]);
@@ -105,7 +108,7 @@ const ContentComponent = ({ navigation, formatPrice }) => {
     };
 
     fetchOrders();
-  }, [route.params?.refreshData]);
+  }, [refreshState]);
 
   //bill item
   const BillItem = ({ order }) => {

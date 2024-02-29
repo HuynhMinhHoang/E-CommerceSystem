@@ -55,7 +55,7 @@ const HeaderComponent = () => {
             ></Image>
           </TouchableOpacity> */}
           <TouchableOpacity>
-            <Text style={styles.textSignIn}>Danh sách sản phẩm</Text>
+            <Text style={styles.textSignIn}>Quảng cáo sản phẩm</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -146,6 +146,10 @@ const ContentComponent = ({ navigation }) => {
   //handle update profile
   const handleUpdateProfile = async () => {
     try {
+      if (!selectedGender || !gender) {
+        Alert.alert("Thông báo:", "Vui lòng nhập đầy đủ thông tin!");
+      } else {
+      }
       const filename = avatar.split("/").pop();
       const match = /\.(\w+)$/.exec(filename);
       const type = match ? `avatar/${match[1]}` : `avatar`;
@@ -155,6 +159,7 @@ const ContentComponent = ({ navigation }) => {
       formData.append("email", email);
       formData.append("phone", phone);
       formData.append("address", address);
+      formData.append("gender", selectedGender);
       formData.append("avt", { uri: avatar, name: filename, type });
 
       const response = await axios.patch(

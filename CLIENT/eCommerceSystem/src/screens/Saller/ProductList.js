@@ -196,9 +196,9 @@ const ContentComponent = ({
                     >
                       <Text style={{ color: "#ee4d2d" }}>Sửa</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btnDelete}>
+                    {/* <TouchableOpacity style={styles.btnDelete}>
                       <Text style={{ color: "white" }}>Xóa</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                 </View>
               );
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     width: 57,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    // marginBottom: 10,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: "#ee4d2d",

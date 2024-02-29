@@ -92,7 +92,6 @@ const ContentComponent = ({ navigation, formatPrice }) => {
     await updateOrderStatus(orderId);
     console.log(orderId);
     navigation.navigate("OrderPendingList", {
-      refreshData: true,
       storeId: storeId,
     });
   };

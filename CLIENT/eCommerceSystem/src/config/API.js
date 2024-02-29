@@ -16,6 +16,7 @@ export const endpoints = {
   get_store_to_confirm: "/stores/get_store_to_confirm/",
   confirm_store: (id) => `/stores/${id}/confirm_store/`,
   products: "/products/",
+  list_product_bySearch: "/products/list_product_bySearch/",
   add_follow: (id) => `/stores/${id}/add_follow/`,
   get_list_follow_byUser: "/follows/get_list_follow_byUser/",
   count_follower: (id) => `/stores/${id}/count_follower/`,

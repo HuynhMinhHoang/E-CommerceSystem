@@ -19,6 +19,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from unidecode import unidecode
 
@@ -220,10 +221,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
     # permission_classes = [permissions.IsAuthenticated]
 
 
+class ProductPagination(PageNumberPagination):
+    page_size = 6
+
 class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # parser_classes = [parsers.MultiPartParser]
+    pagination_class = ProductPagination
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     # permission_classes = [permissions.IsAuthenticated]
@@ -271,6 +275,28 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
         product_data['count_cmtProduct'] = count_cmt
 
     def list(self, request, *args, **kwargs):
+        queryset = Product.objects.filter(quantity__gt=0, status=True)
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = ProductSerializer(page, many=True)
+            serialized_data = [{"product": product_data} for product_data in serializer.data]
+
+            for product_data in serialized_data:
+                self.quantitySold_avgRating_countCmt(product_data['product'])
+
+            return self.get_paginated_response(serialized_data)
+
+        serializer = ProductSerializer(queryset, many=True)
+        serialized_data = [{"product": product_data} for product_data in serializer.data]
+
+        for product_data in serialized_data:
+            self.quantitySold_avgRating_countCmt(product_data['product'])
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['GET'])
+    def list_product_bySearch(self, request, *args, **kwargs):
         queryset = Product.objects.filter(quantity__gt=0, status=True)
         serializer = ProductSerializer(queryset, many=True)
 
@@ -1581,7 +1607,7 @@ class CommentView(viewsets.ViewSet, generics.ListAPIView):
             return Response("Bạn không có quyền xóa bình luận này.", status=status.HTTP_403_FORBIDDEN)
 
         comment.delete()
-        return Response("Bình luận đã được xóa thành công.", status=status.HTTP_204_NO_CONTENT)
+        return Response("Bình luận đã được xóa thành công.", status=status.HTTP_200_OK)
 
 
 #

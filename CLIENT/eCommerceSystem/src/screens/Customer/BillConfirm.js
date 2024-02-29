@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import axios, { endpoints } from "../../config/API";
 import { useRoute } from "@react-navigation/native";
+import { useRefreshData } from "../../context/RefreshDataContext";
 
 const windownWidth = Dimensions.get("window").width;
 const windownHeight = Dimensions.get("window").height;
@@ -67,6 +68,8 @@ const HeaderComponent = () => {
 };
 
 const ContentComponent = ({ navigation, formatPrice }) => {
+  const { state: refreshState } = useRefreshData();
+
   const route = useRoute();
   const { user } = route.params;
   const [orders, setOrders] = useState([]);
@@ -93,7 +96,7 @@ const ContentComponent = ({ navigation, formatPrice }) => {
     };
 
     fetchOrders();
-  }, [route.params?.refreshData]);
+  }, [refreshState]);
 
   //bill item
   const BillItem = ({ order }) => {

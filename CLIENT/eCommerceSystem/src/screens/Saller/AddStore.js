@@ -11,6 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import DropDown from "react-native-dropdown-picker";
 import axios, { endpoints, authApi } from "../../config/API";
@@ -98,31 +99,35 @@ const ContentComponent = ({ navigation }) => {
   //create store
   const registerStore = async () => {
     try {
-      const filename = avatar.split("/").pop();
-      const match = /\.(\w+)$/.exec(filename);
-      const type = match ? `avatar/${match[1]}` : `avatar`;
-      const formData = new FormData();
-      formData.append("name_store", nameStore);
-      formData.append("address", address);
-      formData.append("user", user.id);
-      formData.append("avt", { uri: avatar, name: filename, type });
-
-      console.log(user.id);
-      const api = await authApi();
-
-      const response = await api.post(endpoints.create_store, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      const data = response.data;
-
-      if (response.status === 200 || response.status === 201) {
-        console.log("Đăng ký cửa hàng thành công:", data);
-        navigation.navigate("Profile", { refreshData: true });
+      if (!nameStore || !address || !avatar) {
+        Alert.alert("Thông báo:", "Vui lòng nhập đầy đủ thông tin!");
       } else {
-        console.log("Đăng ký cửa hàng không thành công:");
+        const filename = avatar.split("/").pop();
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `avatar/${match[1]}` : `avatar`;
+        const formData = new FormData();
+        formData.append("name_store", nameStore);
+        formData.append("address", address);
+        formData.append("user", user.id);
+        formData.append("avt", { uri: avatar, name: filename, type });
+
+        console.log(user.id);
+        const api = await authApi();
+
+        const response = await api.post(endpoints.create_store, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        const data = response.data;
+
+        if (response.status === 200 || response.status === 201) {
+          console.log("Đăng ký cửa hàng thành công:", data);
+          navigation.navigate("Profile", { refreshData: true });
+        } else {
+          console.log("Đăng ký cửa hàng không thành công:");
+        }
       }
     } catch (error) {
       console.error("Lỗi kết nối:", error);

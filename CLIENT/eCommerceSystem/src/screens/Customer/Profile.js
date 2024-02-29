@@ -245,7 +245,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
           ></Image>
         </TouchableOpacity>
 
-        <View style={styles.brContent1}></View>
+        {/* <View style={styles.brContent1}></View>
         <TouchableOpacity style={styles.bgIconBill}>
           <Image
             source={require("../../images/setting2.png")}
@@ -256,7 +256,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
             source={require("../../images/settingnext.png")}
             style={styles.iconNext}
           ></Image>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.brContent1}></View>
         <TouchableOpacity
@@ -284,7 +284,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
         </TouchableOpacity>
 
         <View style={styles.brContent}></View>
-        <TouchableOpacity style={styles.bgIconBill}>
+        {/* <TouchableOpacity style={styles.bgIconBill}>
           <Image
             source={require("../../images/setting4.png")}
             style={styles.iconFollow}
@@ -294,7 +294,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
             source={require("../../images/settingnext.png")}
             style={styles.iconNext}
           ></Image>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.brContent1}></View>
         <TouchableOpacity
@@ -346,7 +346,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
           ></Image>
         </TouchableOpacity>
 
-        <View style={styles.brContent}></View>
+        {/* <View style={styles.brContent}></View>
         <TouchableOpacity style={styles.bgIconBill}>
           <Image
             source={require("../../images/setting7.png")}
@@ -357,7 +357,7 @@ const ContentComponent = ({ dispatch, navigation, user }) => {
             source={require("../../images/settingnext.png")}
             style={styles.iconNext}
           ></Image>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={styles.brContent}></View>
         <TouchableOpacity
