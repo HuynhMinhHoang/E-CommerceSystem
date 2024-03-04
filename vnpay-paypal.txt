@@ -1,0 +1,32 @@
+Thông tin cấu hình:
+Terminal ID / Mã Website (vnp_TmnCode): 39HWDUA3
+
+Secret Key / Chuỗi bí mật tạo checksum (vnp_HashSecret): EVMPTPMATYUYDPLADHRQXWZPUHOMHECE
+
+
+Ngân hàng		NCB
+Số thẻ			9704198526191432198
+Tên chủ thẻ		NGUYEN VAN A
+Ngày phát hành		07/15
+Mật khẩu OTP		123456
+
+
+
+paypal
+
+App name
+eCommerce
+
+
+Client ID
+AWumFGq3-EdxeljMErfxysvuBrsCaddwvIbEVsmHMSB2XYURigAIPA72lJtm0o05fPFwde1dBtxkHS2j
+
+Secret key 1
+EGTJu0bV99PPqdoxiM83UXTKvRS63DbTH2gLxdFAP170Il63EAG1HUNJozRKTv0l7gk38C1gaKk-i0Be
+
+tk người bán
+hmh20172018@gmail.com
+
+tk người mua
+minhhoang2001@gmail.com
+123123asd

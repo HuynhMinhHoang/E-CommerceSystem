@@ -143,7 +143,10 @@ const ContentComponent = ({ navigation }) => {
         }
       }
     } catch (error) {
-      console.error("Lỗi kết nối:", error);
+      // console.error("Lỗi kết nối:", error);
+      if (error.response && error.response.status === 400) {
+        Alert.alert("Thông báo:", "Lỗi từ server: Dữ liệu không hợp lệ!");
+      }
     }
   };
 

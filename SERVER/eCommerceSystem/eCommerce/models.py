@@ -145,16 +145,6 @@ class PaymentForm(forms.Form):
     language = forms.CharField(max_length=2)
 
 
-# class ReviewStore(BaseModel):
-#     rating = models.IntegerField()
-#     content = models.TextField()
-#     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-#     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-#     order = models.OneToOneField(Order, null=True, blank=True, on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return f"{self.account.full_name} đã đánh giá cửa hàng {self.store.name_store}"
-
 
 class CommentProduct(BaseModel):
     rating = models.IntegerField()

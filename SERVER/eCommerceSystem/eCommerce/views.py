@@ -492,7 +492,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
             product_1 = Product.objects.get(id=id_product_1)
             category_id_1 = product_1.category.id
             product_data_1 = ProductSerializer(product_1).data
-            self.quantitySold_avgRating_countCmt(product_data_1)  # Pass serialized data
+            self.quantitySold_avgRating_countCmt(product_data_1)
         except Product.DoesNotExist:
             raise Http404("Không tìm thấy sản phẩm 1")
 
@@ -500,7 +500,7 @@ class ProductViewSet(viewsets.ViewSet, generics.ListAPIView):
             product_2 = Product.objects.get(id=id_product_2)
             category_id_2 = product_2.category.id
             product_data_2 = ProductSerializer(product_2).data
-            self.quantitySold_avgRating_countCmt(product_data_2)  # Pass serialized data
+            self.quantitySold_avgRating_countCmt(product_data_2)
         except Product.DoesNotExist:
             raise Http404("Không tìm thấy sản phẩm 2")
 
